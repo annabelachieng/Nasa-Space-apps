@@ -296,13 +296,17 @@ export default function App() {
         </div>
       )}
 
-      {/* First Page: Uploaded Cosmic Frontlines Artwork + Choose Your Space Journey CTA */}
+      {/* First Page: Cosmic Frontlines Twinkling Cosmos Landing Cover */}
       {activeSection === 'landing' && (
         <LandingView
           onStartJourney={() => {
             sfx.playPartSelect();
             setJourneyStep('categories');
             setActiveSection('journeys');
+          }}
+          onOpenBuilder={() => {
+            sfx.playPartSelect();
+            setActiveSection('builder');
           }}
         />
       )}

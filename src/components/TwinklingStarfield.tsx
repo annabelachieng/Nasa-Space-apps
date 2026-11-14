@@ -48,8 +48,8 @@ export const TwinklingStarfield: React.FC<TwinklingStarfieldProps> = ({
       const r5 = seededUnit(i * 7 + 5);
       const r6 = seededUnit(i * 7 + 6);
 
-      const isBright = r3 > 0.86;
-      const size = isBright ? 2.2 + r4 * 1.1 : 1 + r4 * 1.3;
+      const isBright = r3 > 0.82;
+      const size = isBright ? 2.4 + r4 * 1.4 : 1.1 + r4 * 1.3;
 
       items.push({
         id: i,
@@ -57,11 +57,11 @@ export const TwinklingStarfield: React.FC<TwinklingStarfieldProps> = ({
         y: 1 + r2 * 98,
         size,
         color: STAR_COLORS[Math.floor(r5 * STAR_COLORS.length)] ?? '#ffffff',
-        minOpacity: isBright ? 0.25 : 0.12,
-        maxOpacity: isBright ? 0.98 : 0.72,
-        duration: 2.6 + r6 * 4.2,
-        delay: -(r3 * 6.5),
-        hasCrossGlint: r3 > 0.93,
+        minOpacity: isBright ? 0.18 : 0.08,
+        maxOpacity: isBright ? 1 : 0.82,
+        duration: 2.2 + r6 * 3.8,
+        delay: -(r3 * 6.0),
+        hasCrossGlint: r3 > 0.9,
       });
     }
     return items;
