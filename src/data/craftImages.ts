@@ -13,6 +13,13 @@ import europaClipperImg from '../assets/images/craft_europa_clipper_179465173961
 import junoImg from '../assets/images/craft_juno_1794651739959.jpg';
 import newHorizonsImg from '../assets/images/craft_new_horizons_1794651740678.jpg';
 import messengerImg from '../assets/images/craft_messenger_1794651741532.jpg';
+import apollo10SnoopyImg from '../assets/images/craft_apollo_10_snoopy_1795503183489.jpg';
+import apollo11EagleImg from '../assets/images/craft_apollo_11_eagle_1795503184834.jpg';
+import apolloSivbImg from '../assets/images/craft_apollo_sivb_1795503185311.jpg';
+import venera13Img from '../assets/images/craft_venera_13_1795505560000.jpg';
+import insightImg from '../assets/images/craft_insight_1795505559222.jpg';
+import philaeImg from '../assets/images/craft_philae_1795505559436.jpg';
+import phoenixImg from '../assets/images/craft_phoenix_1795505560447.jpg';
 import apolloImg from '../assets/images/craft_apollo_11_1794651741206.jpg';
 import osirisRexImg from '../assets/images/craft_osiris_rex_1794652806895.jpg';
 import soyuzImg from '../assets/images/craft_soyuz_capsule_1794651742779.jpg';
@@ -33,6 +40,13 @@ export const CRAFT_IMAGES: Record<string, string> = {
   juno: junoImg,
   'new-horizons': newHorizonsImg,
   messenger: messengerImg,
+  'apollo-10-snoopy': apollo10SnoopyImg,
+  'apollo-11-eagle': apollo11EagleImg,
+  'apollo-sivb': apolloSivbImg,
+  'venera-13': venera13Img,
+  insight: insightImg,
+  philae: philaeImg,
+  phoenix: phoenixImg,
   'apollo-11-cm': apolloImg,
   'osiris-rex-capsule': osirisRexImg,
   'soyuz-capsule': soyuzImg,

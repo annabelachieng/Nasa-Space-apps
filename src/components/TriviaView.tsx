@@ -2,15 +2,19 @@ import React, { useState } from 'react';
 import { Award, CheckCircle2, HelpCircle, Orbit, RotateCcw, Star, XCircle } from 'lucide-react';
 import { TRIVIA_LEVELS } from '../data/triviaData';
 import { SPACECRAFT_CATEGORIES, SPACECRAFT_LIST } from '../data/spacecraftData';
-import { SpacecraftData } from '../types/spacecraft';
+import { SpacecraftData, TriviaLevel } from '../types/spacecraft';
 import { SpacecraftImage } from './SpacecraftImage';
 import { sfx } from '../utils/soundEffects';
 
 interface TriviaViewProps {
   onInspectCraft: (craft: SpacecraftData) => void;
+  onLevelCompleted?: (level: TriviaLevel, score: number) => void;
 }
 
-export const TriviaView: React.FC<TriviaViewProps> = ({ onInspectCraft }) => {
+export const TriviaView: React.FC<TriviaViewProps> = ({
+  onInspectCraft,
+  onLevelCompleted,
+}) => {
   const [activeLevelIdx, setActiveLevelIdx] = useState(0);
   const [questionIdx, setQuestionIdx] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
@@ -59,6 +63,7 @@ export const TriviaView: React.FC<TriviaViewProps> = ({ onInspectCraft }) => {
         ...prev,
         [level.id]: Math.max(prev[level.id] ?? 0, levelScore),
       }));
+      onLevelCompleted?.(level, levelScore);
     }
   };
 

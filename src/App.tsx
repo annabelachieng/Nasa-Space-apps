@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, Award, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { SPACECRAFT_CATEGORIES, SPACECRAFT_LIST } from './data/spacecraftData';
 import { DEFAULT_CUSTOM_CRAFT } from './data/builderData';
@@ -11,7 +11,9 @@ import {
   CustomCraftConfig,
   ExploreMode,
   JourneyStep,
+  MissionLogEntry,
   SpacecraftData,
+  TriviaLevel,
 } from './types/spacecraft';
 import { SpacecraftViewport } from './components/SpacecraftViewport';
 import { TopBar } from './components/TopBar';
@@ -31,18 +33,40 @@ import {
   loadBadgeProgress,
   saveBadgeProgress,
 } from './utils/badgeProgress';
+import {
+  appendMissionMilestone,
+  clearMissionLogStorage,
+  loadMissionLog,
+  syncMissionLogWithBadgeProgress,
+} from './utils/missionLog';
+import {
+  DEFAULT_NAV_SNAPSHOT,
+  getInitialNavSnapshot,
+  getNavKey,
+  getPageKey,
+  hashForSnapshot,
+  isValidNavSnapshot,
+  NavSnapshot,
+  parseHashToSnapshot,
+} from './utils/navigationHistory';
 import { sfx } from './utils/soundEffects';
 
 export default function App() {
-  const [activeCraftIdx, setActiveCraftIdx] = useState(0);
-  const [activeSection, setActiveSection] = useState<AppSection>('landing');
-  const [journeyStep, setJourneyStep] = useState<JourneyStep>('categories');
-  const [selectedCategoryId, setSelectedCategoryId] = useState<CategoryId>('trailblazers');
-  const [exploreMode, setExploreMode] = useState<ExploreMode>('inspect');
+  const [initialNav] = useState<NavSnapshot>(() => getInitialNavSnapshot());
+  const [activeCraftIdx, setActiveCraftIdx] = useState(() => {
+    const idx = SPACECRAFT_LIST.findIndex((c) => c.id === initialNav.activeCraftId);
+    return idx >= 0 ? idx : 0;
+  });
+  const [activeSection, setActiveSection] = useState<AppSection>(initialNav.activeSection);
+  const [journeyStep, setJourneyStep] = useState<JourneyStep>(initialNav.journeyStep);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<CategoryId>(
+    initialNav.selectedCategoryId
+  );
+  const [exploreMode, setExploreMode] = useState<ExploreMode>(initialNav.exploreMode);
   const [explodeAmount, setExplodeAmount] = useState(0);
   const [motionSpeed, setMotionSpeed] = useState(1);
   const [selectedPartId, setSelectedPartId] = useState<string | null>(null);
-  const [rosterOpen, setRosterOpen] = useState(false);
+  const [rosterOpen, setRosterOpen] = useState(initialNav.rosterOpen);
   const [dockCollapsed, setDockCollapsed] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [resetCameraSignal, setResetCameraSignal] = useState(0);
@@ -54,9 +78,12 @@ export default function App() {
   const [builderExplodePreview, setBuilderExplodePreview] = useState(false);
   const [builderActiveSlot, setBuilderActiveSlot] = useState<BuilderSlotId>('core');
 
-  // Digital Mission Badges state
+  // Digital Mission Badges & Chronological Mission Log state
   const [badgeProgress, setBadgeProgress] = useState<BadgeProgressMap>(() =>
     loadBadgeProgress()
+  );
+  const [missionLog, setMissionLog] = useState<MissionLogEntry[]>(() =>
+    syncMissionLogWithBadgeProgress(loadMissionLog(), loadBadgeProgress())
   );
   const [unlockedBannerCraft, setUnlockedBannerCraft] =
     useState<SpacecraftData | null>(null);
@@ -65,6 +92,23 @@ export default function App() {
   const activeCategory =
     SPACECRAFT_CATEGORIES.find((c) => c.id === activeCraft.categoryId) ??
     SPACECRAFT_CATEGORIES[0];
+
+  const recordMissionLogEntry = useCallback(
+    (
+      entry: Omit<MissionLogEntry, 'timestamp'> & { timestamp?: number },
+      allowScoreUpdate = false
+    ) => {
+      setMissionLog((prev) =>
+        appendMissionMilestone(prev, entry, allowScoreUpdate)
+      );
+    },
+    []
+  );
+
+  const handleClearMissionLog = useCallback(() => {
+    clearMissionLogStorage();
+    setMissionLog([]);
+  }, []);
 
   const recordCraftMilestone = useCallback(
     (
@@ -145,9 +189,44 @@ export default function App() {
             partsVisited: [...prev.partsVisited, partId],
           };
         });
+
+        const partMeta = activeCraft.parts.find((p) => p.id === partId);
+        if (partMeta) {
+          recordMissionLogEntry({
+            id: `part:${activeCraft.id}:${partId}`,
+            kind: 'part-inspected',
+            title: `Inspected ${activeCraft.shortName} · ${partMeta.name}`,
+            detail: `${partMeta.role} — ${partMeta.funFact}`,
+            craftId: activeCraft.id,
+            categoryId: activeCraft.categoryId,
+            partId: partMeta.id,
+            section: 'explore',
+            exploreMode: 'inspect',
+          });
+
+          const currentVisited = getCraftProgress(badgeProgress, activeCraft.id).partsVisited;
+          const nextVisitedCount = currentVisited.includes(partId)
+            ? currentVisited.length
+            : currentVisited.length + 1;
+          if (
+            activeCraft.parts.length > 0 &&
+            nextVisitedCount >= activeCraft.parts.length
+          ) {
+            recordMissionLogEntry({
+              id: `all-parts:${activeCraft.id}`,
+              kind: 'all-parts-completed',
+              title: `Completed all 3D parts for ${activeCraft.shortName}`,
+              detail: `Inspected every ${activeCraft.parts.length}-part subsystem aboard ${activeCraft.name}.`,
+              craftId: activeCraft.id,
+              categoryId: activeCraft.categoryId,
+              section: 'explore',
+              exploreMode: 'inspect',
+            });
+          }
+        }
       }
     },
-    [activeCraft.id, recordCraftMilestone]
+    [activeCraft, badgeProgress, recordCraftMilestone, recordMissionLogEntry]
   );
 
   const handleViewportPartSelect = useCallback(
@@ -183,17 +262,38 @@ export default function App() {
         recordCraftMilestone(craftIdToMark, (prev) =>
           prev.motionVisited ? prev : { ...prev, motionVisited: true }
         );
+        const targetCraft = SPACECRAFT_LIST.find((c) => c.id === craftIdToMark);
+        if (targetCraft) {
+          recordMissionLogEntry({
+            id: `motion:${targetCraft.id}`,
+            kind: 'motion-watched',
+            title: `Watched ${targetCraft.shortName} in Space Motion`,
+            detail: targetCraft.motionCaption,
+            craftId: targetCraft.id,
+            categoryId: targetCraft.categoryId,
+            section: 'explore',
+            exploreMode: 'motion',
+          });
+        }
       }
     },
-    [activeCraft.id, recordCraftMilestone]
+    [activeCraft.id, recordCraftMilestone, recordMissionLogEntry]
   );
 
   const handleOpenCraftSection = useCallback(
-    (craft: SpacecraftData, section: AppSection, targetExploreMode: ExploreMode = 'inspect') => {
+    (
+      craft: SpacecraftData,
+      section: AppSection,
+      targetExploreMode: ExploreMode = 'inspect',
+      partId?: string
+    ) => {
       handleSelectCraft(craft);
       setActiveSection(section);
       if (section === 'explore') {
         handleChangeMode(targetExploreMode, craft.id);
+        if (partId) {
+          setSelectedPartId(partId);
+        }
       }
     },
     [handleSelectCraft, handleChangeMode]
@@ -207,18 +307,172 @@ export default function App() {
     });
   }, []);
 
-  // Track Timeline visits and Explore Motion visits automatically
+  // Track Timeline visits, Explore Motion visits, and unlocked Mission Badges
   useEffect(() => {
     if (activeSection === 'timeline') {
       recordCraftMilestone(activeCraft.id, (prev) =>
         prev.timelineVisited ? prev : { ...prev, timelineVisited: true }
       );
+      recordMissionLogEntry({
+        id: `timeline:${activeCraft.id}`,
+        kind: 'timeline-explored',
+        title: `Explored ${activeCraft.shortName} Timeline`,
+        detail: `Traced key milestones from ${activeCraft.launchDate} · ${activeCraft.destination}.`,
+        craftId: activeCraft.id,
+        categoryId: activeCraft.categoryId,
+        section: 'timeline',
+      });
     } else if (activeSection === 'explore' && exploreMode === 'motion') {
       recordCraftMilestone(activeCraft.id, (prev) =>
         prev.motionVisited ? prev : { ...prev, motionVisited: true }
       );
+      recordMissionLogEntry({
+        id: `motion:${activeCraft.id}`,
+        kind: 'motion-watched',
+        title: `Watched ${activeCraft.shortName} in Space Motion`,
+        detail: activeCraft.motionCaption,
+        craftId: activeCraft.id,
+        categoryId: activeCraft.categoryId,
+        section: 'explore',
+        exploreMode: 'motion',
+      });
     }
-  }, [activeSection, exploreMode, activeCraft.id, recordCraftMilestone]);
+  }, [activeSection, exploreMode, activeCraft, recordCraftMilestone, recordMissionLogEntry]);
+
+  useEffect(() => {
+    if (!unlockedBannerCraft) return;
+    recordMissionLogEntry({
+      id: `badge:${unlockedBannerCraft.id}`,
+      kind: 'badge-earned',
+      title: `Unlocked ${unlockedBannerCraft.name} Mission Badge`,
+      detail: `Completed all 4 exploration milestones for ${unlockedBannerCraft.shortName}.`,
+      craftId: unlockedBannerCraft.id,
+      categoryId: unlockedBannerCraft.categoryId,
+      section: 'explore',
+      exploreMode: 'inspect',
+    });
+  }, [unlockedBannerCraft, recordMissionLogEntry]);
+
+  const currentNavSnapshot: NavSnapshot = useMemo(
+    () => ({
+      cfNav: true,
+      activeSection,
+      journeyStep,
+      selectedCategoryId,
+      activeCraftId: activeCraft.id,
+      exploreMode,
+      rosterOpen,
+    }),
+    [
+      activeSection,
+      journeyStep,
+      selectedCategoryId,
+      activeCraft.id,
+      exploreMode,
+      rosterOpen,
+    ]
+  );
+
+  const hasMountedHistoryRef = useRef(false);
+  const isApplyingPopstateRef = useRef(false);
+  const prevNavSnapshotRef = useRef<NavSnapshot>(currentNavSnapshot);
+  const lastCommittedNavKeyRef = useRef<string>(getNavKey(currentNavSnapshot));
+
+  // Listen to browser/OS back & forward navigation (phone 3-button back & swipe gestures)
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      const incoming: NavSnapshot = isValidNavSnapshot(event.state)
+        ? event.state
+        : (parseHashToSnapshot(window.location.hash) ?? DEFAULT_NAV_SNAPSHOT);
+
+      const incomingKey = getNavKey(incoming);
+      if (incomingKey === lastCommittedNavKeyRef.current) {
+        return;
+      }
+
+      isApplyingPopstateRef.current = true;
+      lastCommittedNavKeyRef.current = incomingKey;
+
+      const idx = SPACECRAFT_LIST.findIndex((c) => c.id === incoming.activeCraftId);
+      if (idx !== -1) {
+        setActiveCraftIdx(idx);
+      }
+      setActiveSection(incoming.activeSection);
+      setJourneyStep(incoming.journeyStep);
+      setSelectedCategoryId(incoming.selectedCategoryId);
+      setExploreMode(incoming.exploreMode);
+      setRosterOpen(incoming.rosterOpen);
+      setSelectedPartId(null);
+      setExplodeAmount(0);
+      setUnlockedBannerCraft(null);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Push/replace history snapshots whenever navigable screen state changes
+  useEffect(() => {
+    const nextKey = getNavKey(currentNavSnapshot);
+
+    if (!hasMountedHistoryRef.current) {
+      hasMountedHistoryRef.current = true;
+      prevNavSnapshotRef.current = currentNavSnapshot;
+      lastCommittedNavKeyRef.current = nextKey;
+      try {
+        window.history.replaceState(
+          currentNavSnapshot,
+          '',
+          hashForSnapshot(currentNavSnapshot)
+        );
+      } catch {
+        // Ignore history restrictions in sandboxed environments
+      }
+      return;
+    }
+
+    if (isApplyingPopstateRef.current) {
+      isApplyingPopstateRef.current = false;
+      prevNavSnapshotRef.current = currentNavSnapshot;
+      lastCommittedNavKeyRef.current = nextKey;
+      return;
+    }
+
+    if (nextKey === lastCommittedNavKeyRef.current) {
+      return;
+    }
+
+    const prevSnapshot = prevNavSnapshotRef.current;
+    prevNavSnapshotRef.current = currentNavSnapshot;
+    lastCommittedNavKeyRef.current = nextKey;
+
+    try {
+      if (prevSnapshot.rosterOpen && !currentNavSnapshot.rosterOpen) {
+        if (
+          getPageKey(prevSnapshot) === getPageKey(currentNavSnapshot) &&
+          isValidNavSnapshot(window.history.state) &&
+          window.history.state.rosterOpen
+        ) {
+          window.history.back();
+        } else {
+          window.history.replaceState(
+            currentNavSnapshot,
+            '',
+            hashForSnapshot(currentNavSnapshot)
+          );
+        }
+        return;
+      }
+
+      window.history.pushState(
+        currentNavSnapshot,
+        '',
+        hashForSnapshot(currentNavSnapshot)
+      );
+    } catch {
+      // Ignore history restrictions in sandboxed environments
+    }
+  }, [currentNavSnapshot]);
 
   // Keyboard shortcut 'H' to collapse/expand bottom HUD
   useEffect(() => {
@@ -304,10 +558,6 @@ export default function App() {
             setJourneyStep('categories');
             setActiveSection('journeys');
           }}
-          onOpenBuilder={() => {
-            sfx.playPartSelect();
-            setActiveSection('builder');
-          }}
         />
       )}
 
@@ -375,6 +625,8 @@ export default function App() {
           onNavigateSection={setActiveSection}
           onOpenRoster={() => setRosterOpen(true)}
           badgeProgress={badgeProgress}
+          missionLog={missionLog}
+          onClearMissionLog={handleClearMissionLog}
         />
       )}
 
@@ -504,6 +756,18 @@ export default function App() {
             recordCraftMilestone(craftId, (prev) =>
               prev.storyCompleted ? prev : { ...prev, storyCompleted: true }
             );
+            const completedCraft = SPACECRAFT_LIST.find((c) => c.id === craftId);
+            if (completedCraft) {
+              recordMissionLogEntry({
+                id: `story:${completedCraft.id}`,
+                kind: 'story-completed',
+                title: `Completed Story: "${completedCraft.story.title}"`,
+                detail: `${completedCraft.story.frontlineCallsign} adventure finished.`,
+                craftId: completedCraft.id,
+                categoryId: completedCraft.categoryId,
+                section: 'story',
+              });
+            }
           }}
           onBackToCraft={() => {
             setJourneyStep('craft-hub');
@@ -519,6 +783,18 @@ export default function App() {
             handleSelectCraft(craft);
             setActiveSection('explore');
             setExploreMode('inspect');
+          }}
+          onLevelCompleted={(level: TriviaLevel, score: number) => {
+            recordMissionLogEntry(
+              {
+                id: `trivia:${level.id}`,
+                kind: 'trivia-level-completed',
+                title: `Completed ${level.title}`,
+                detail: `Scored ${score}/${level.questions.length} · Earned ${level.rankReward} rank.`,
+                section: 'trivia',
+              },
+              true
+            );
           }}
         />
       )}

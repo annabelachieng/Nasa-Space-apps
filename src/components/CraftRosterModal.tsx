@@ -41,7 +41,7 @@ export const CraftRosterModal: React.FC<CraftRosterModalProps> = ({
               Cosmic Frontlines Spacecraft Roster
             </h2>
             <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
-              6 Frontier Categories · {SPACECRAFT_LIST.length} Animated Spacecraft Ready to Explore
+              {SPACECRAFT_CATEGORIES.length} Frontier Categories · {SPACECRAFT_LIST.length} Animated Spacecraft Ready to Explore
             </p>
           </div>
           <button
@@ -98,7 +98,13 @@ export const CraftRosterModal: React.FC<CraftRosterModalProps> = ({
                   </h3>
                   <span className="text-xs text-slate-400">{cat.subtitle}</span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div
+                  className={
+                    crafts.length >= 4
+                      ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'
+                      : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'
+                  }
+                >
                   {crafts.map((craft) => {
                     const isSelected = craft.id === activeCraftId;
                     return (

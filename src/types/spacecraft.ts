@@ -4,13 +4,20 @@ export type CategoryId =
   | 'fallen-on-mars'
   | 'gas-giants'
   | 'bound-by-gravity'
+  | 'missing-in-action'
+  | 'rearguard'
   | 'safe-at-home';
 
 export type MotionEnvironment =
   | 'earth-orbit'
   | 'interstellar'
   | 'solar-corona'
+  | 'solar-orbit'
+  | 'lunar-orbit'
+  | 'venus-surface'
+  | 'comet-surface'
   | 'mars-surface'
+  | 'mars-polar'
   | 'mars-flight'
   | 'saturn-orbit'
   | 'jupiter-orbit'
@@ -19,7 +26,13 @@ export type MotionEnvironment =
 
 export type AppSection = 'landing' | 'journeys' | 'explore' | 'timeline' | 'story' | 'trivia' | 'builder';
 
-export type JourneyStep = 'categories' | 'category-crafts' | 'craft-hub' | 'hall-of-fame';
+export type JourneyStep =
+  | 'categories'
+  | 'category-crafts'
+  | 'craft-hub'
+  | 'hall-of-fame'
+  | 'mission-log'
+  | 'route-map';
 
 export type ExploreMode = 'inspect' | 'motion';
 
@@ -129,3 +142,25 @@ export interface CraftExplorationProgress {
 }
 
 export type BadgeProgressMap = Record<string, CraftExplorationProgress>;
+
+export type MissionMilestoneKind =
+  | 'part-inspected'
+  | 'all-parts-completed'
+  | 'motion-watched'
+  | 'timeline-explored'
+  | 'story-completed'
+  | 'badge-earned'
+  | 'trivia-level-completed';
+
+export interface MissionLogEntry {
+  id: string;
+  kind: MissionMilestoneKind;
+  timestamp: number;
+  title: string;
+  detail: string;
+  craftId?: string;
+  categoryId?: CategoryId;
+  partId?: string;
+  section?: AppSection;
+  exploreMode?: ExploreMode;
+}

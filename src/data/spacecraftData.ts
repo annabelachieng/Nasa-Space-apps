@@ -32,6 +32,18 @@ export const SPACECRAFT_CATEGORIES: SpacecraftCategory[] = [
     accentHex: '#818CF8',
   },
   {
+    id: 'missing-in-action',
+    title: 'Missing in Action',
+    subtitle: 'Silent craft whose radio fell quiet while still drifting on known cosmic paths',
+    accentHex: '#A78BFA',
+  },
+  {
+    id: 'rearguard',
+    title: 'Rearguard',
+    subtitle: 'They held their ground until the last of their power was gone.',
+    accentHex: '#F43F5E',
+  },
+  {
     id: 'safe-at-home',
     title: 'Safe at Home',
     subtitle: 'Heat-shielded capsules built to survive fiery dives back to Earth',
@@ -1191,7 +1203,779 @@ export const SPACECRAFT_LIST: SpacecraftData[] = [
   },
 
   // =========================================================================
-  // 6. SAFE AT HOME
+  // 6. MISSING IN ACTION
+  // =========================================================================
+  {
+    id: 'apollo-10-snoopy',
+    name: 'Apollo 10 Lunar Module "Snoopy"',
+    shortName: 'Apollo 10 Snoopy',
+    categoryId: 'missing-in-action',
+    isFeaturedRequired: true,
+    launchYear: 1969,
+    launchDate: 'May 18, 1969',
+    activeSpan: '8 days mission · 55+ years silent in solar orbit',
+    destination: 'Heliocentric (Solar) Orbit',
+    statusLabel: 'Radio Silent · Still Drifting Around the Sun (2018 AV2 Candidate)',
+    tagline: 'The Moon dress-rehearsal lander stage lost in solar orbit for 50 years',
+    kidOverview:
+      'Before Apollo 11 could land on the Moon, Apollo 10’s Lunar Module "Snoopy" swooped down to just 14 kilometers above the lunar craters in a thrilling dress rehearsal! Afterward, Snoopy’s upper ascent stage fired its engine past the Moon into an orbit around the Sun—where its batteries ran out and it drifted silently for half a century.',
+    motionEnvironment: 'solar-orbit',
+    motionCaption: 'Circling the Sun in silent solar orbit along a known gravitational path after losing radio contact.',
+    defaultCameraPos: [3.6, 2.0, 4.0],
+    parts: [
+      {
+        id: 'snoopy-cabin',
+        name: 'Pressurized Crew Ascent Cabin',
+        role: 'Lunar Scout Cockpit',
+        howItWorked:
+          'Inside this lightweight aluminum cabin, astronauts Thomas Stafford and Eugene Cernan stood strapped in at the controls, looking out two tilted triangular windows to inspect Apollo 11’s future landing site.',
+        funFact: 'After the astronauts crawled back into Command Module "Charlie Brown," Snoopy flew empty by remote radio command!',
+        explodeOffset: [0, 0, 0],
+        cameraOffset: [2.6, 1.3, 3.0],
+      },
+      {
+        id: 'snoopy-docking',
+        name: 'Top Docking Tunnel & Hatch',
+        role: 'Spacecraft Linkup Ring',
+        howItWorked:
+          'This round ceiling collar locked tightly onto Command Module "Charlie Brown" like a space bridge so the astronauts could float safely between the two ships in lunar orbit.',
+        funFact: 'Snoopy and Charlie Brown were named after the famous Peanuts comic strip characters!',
+        explodeOffset: [0, 1.15, 0],
+        cameraOffset: [2.2, 2.0, 2.4],
+      },
+      {
+        id: 'snoopy-rcs',
+        name: 'RCS Steering Quads & Radar',
+        role: 'Attitude & Rendezvous Guide',
+        howItWorked:
+          'Four clusters of four tiny rocket nozzles aimed Snoopy in every direction, while its radar dish tracked Charlie Brown. Once Snoopy’s batteries drained in May 1969, all steering and radio signals stopped forever.',
+        funFact: 'In 2019, amateur astronomers spotted a tiny tumbling object named 2018 AV2 on Snoopy’s exact solar path—98% sure it is Snoopy!',
+        explodeOffset: [-1.15, 0.55, 0.4],
+        cameraOffset: [-2.8, 1.6, 2.8],
+      },
+      {
+        id: 'snoopy-engine',
+        name: 'Ascent Engine & Fuel Tanks',
+        role: 'Solar Escape Thruster',
+        howItWorked:
+          'Fed by two silver side tanks, Snoopy’s single ascent rocket engine burned until its fuel ran dry, flinging the empty stage past the Moon and out into an endless orbit around the Sun.',
+        funFact: 'Because there is no air in solar orbit to slow it down, Snoopy is the only intact Apollo lunar ascent stage still flying around the Sun!',
+        explodeOffset: [0, -1.15, 0],
+        cameraOffset: [2.6, -0.6, 2.8],
+      },
+    ],
+    timeline: [
+      {
+        date: 'May 18, 1969',
+        year: 1969,
+        title: 'Launch Toward the Moon',
+        description: 'Saturn V lifts off carrying Apollo 10 Command Module Charlie Brown and Lunar Module Snoopy.',
+      },
+      {
+        date: 'May 22, 1969',
+        year: 1969,
+        title: '14 km Low Pass Over Mare Tranquillitatis',
+        description: 'Snoopy skims low above the Moon’s craters to test radar and scout Apollo 11’s landing spot.',
+      },
+      {
+        date: 'May 23, 1969',
+        year: 1969,
+        title: 'Ascent Burn into Solar Orbit',
+        description: 'After the crew returns to Charlie Brown, Snoopy fires its engine to depletion and escapes into solar orbit, soon falling radio silent.',
+      },
+      {
+        date: 'June 2019',
+        year: 2019,
+        title: 'Rediscovered on Path 2018 AV2',
+        description: 'Sky-watchers identify a faint solar-orbiting object matching Snoopy’s predicted trajectory after 50 years missing in action.',
+      },
+    ],
+    story: {
+      title: 'The Silent Puppy Around the Sun',
+      frontlineCallsign: 'LM-4 Snoopy',
+      chapters: [
+        {
+          chapterTitle: 'Chapter 1: Skimming the Craters',
+          setting: '14 Kilometers Above the Moon, May 1969',
+          text: 'Before Apollo 11 could try the first Moon landing, someone had to fly right down to the treetops—or crater rims—to prove it was safe. Snoopy dove thrillingly close to the gray lunar plains while its crew checked every instrument.',
+          kidTakeaway: 'Practice missions catch problems early so the real landing can succeed.',
+        },
+        {
+          chapterTitle: 'Chapter 2: Farewell into Sunshine',
+          setting: 'Deep Space Past the Moon',
+          text: 'Once the astronauts floated safely back into Charlie Brown, ground control commanded Snoopy’s ascent engine to fire until every drop of fuel was gone. Past the Moon it flew, until its batteries whispered their last radio beep and went quiet.',
+          kidTakeaway: 'In space, a spacecraft keeps coasting on its orbit long after its radio goes silent.',
+        },
+        {
+          chapterTitle: 'Chapter 3: Fifty Years of Cosmic Detective Work',
+          setting: 'Heliocentric Orbit, 2019',
+          text: 'Astronomers never forgot Snoopy. Because gravity follows strict mathematical paths, orbital detectives traced its path for decades until telescopes caught a tiny glint of sunlight—almost certainly Snoopy, still circling our Sun!',
+          kidTakeaway: 'Even when contact is lost, gravity lets scientists calculate where a spacecraft is traveling.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'apollo-11-eagle',
+    name: 'Apollo 11 Lunar Module "Eagle" (Ascent Stage)',
+    shortName: 'Apollo 11 Eagle',
+    categoryId: 'missing-in-action',
+    isFeaturedRequired: true,
+    launchYear: 1969,
+    launchDate: 'July 16, 1969',
+    activeSpan: '8 days active · Lunar orbit fate uncertain',
+    destination: 'Lunar Orbit (Fate Uncertain)',
+    statusLabel: 'Contact Lost After Jettison · May Still Orbit the Moon Today',
+    tagline: 'The famous Moon lander’s top half—left in lunar orbit with an uncertain fate',
+    kidOverview:
+      'Everyone knows Eagle’s gold-legged bottom half stayed parked at Tranquility Base on the Moon. But what happened to Eagle’s top ascent cabin after Neil Armstrong and Buzz Aldrin climbed back into Columbia? Left circling the Moon with its radio off, scientists once thought it crashed—until new orbital math in 2021 revealed Eagle might STILL be quietly orbiting the Moon today!',
+    motionEnvironment: 'lunar-orbit',
+    motionCaption: 'Drifting silently high above lunar craters—either long crashed or still locked in a rare stable lunar orbit.',
+    defaultCameraPos: [3.6, 2.1, 4.0],
+    parts: [
+      {
+        id: 'eagle-cabin',
+        name: 'Ascent Cabin & Gold Foil Trim',
+        role: 'First Moon Return Cockpit',
+        howItWorked:
+          'Built thin as soda cans to save weight, this cabin carried the lunar soil boxes and both Moonwalkers safely back off the Moon’s surface. Gold Kapton strips shielded delicate corners from extreme heat.',
+        funFact: 'The walls of Eagle were so thin that a sharp screwdriver could almost poke right through them!',
+        explodeOffset: [0, 0, 0],
+        cameraOffset: [2.6, 1.3, 3.0],
+      },
+      {
+        id: 'eagle-tanks',
+        name: 'Side Propellant & Helium Bulge Tanks',
+        role: 'Hypergolic Fuel Pods',
+        howItWorked:
+          'Two big rounded side pods held rocket fuel and oxidizer that ignited instantly on contact—no spark plug needed—guaranteeing Eagle could blast off the Moon on the very first try.',
+        funFact: 'Astronauts actually broke the engine arming switch accidentally with a bulky spacesuit—and used a felt-tip pen to push it in!',
+        explodeOffset: [1.15, 0.2, 0],
+        cameraOffset: [3.0, 1.2, 2.6],
+      },
+      {
+        id: 'eagle-antenna',
+        name: 'S-Band & Rendezvous Dish Antennas',
+        role: 'Historic Signal Relays',
+        howItWorked:
+          'Eagle’s round dish antennas beamed astronauts’ voices and navigation pings across 384,000 km back to Earth. Once Eagle undocked from Columbia for the final time, its transmitters were powered down for good.',
+        funFact: 'After undocking on July 21, 1969, nobody on Earth or in orbit ever received another signal from Eagle.',
+        explodeOffset: [-1.05, 0.75, 0.4],
+        cameraOffset: [-2.6, 1.8, 2.8],
+      },
+      {
+        id: 'eagle-engine',
+        name: 'Ascent Engine Nozzle',
+        role: 'Lunar Liftoff Rocket',
+        howItWorked:
+          'Eagle’s ascent engine fired for 7 minutes and 14 seconds to lift Armstrong and Aldrin from Tranquility Base back to lunar orbit—and was never fired again after they rejoined Columbia.',
+        funFact: 'A 2021 computer simulation by researcher James Meador suggested Eagle’s exact orbit could stay stable for decades without crashing!',
+        explodeOffset: [0, -1.15, 0],
+        cameraOffset: [2.4, -0.6, 2.8],
+      },
+    ],
+    timeline: [
+      {
+        date: 'July 20, 1969',
+        year: 1969,
+        title: 'First Humans Land on the Moon',
+        description: 'Eagle touches down at Tranquility Base, making history as Neil Armstrong and Buzz Aldrin step onto lunar dust.',
+      },
+      {
+        date: 'July 21, 1969',
+        year: 1969,
+        title: 'Blasting Off Back to Columbia',
+        description: 'Eagle’s ascent stage leaves its landing legs behind, rockets into lunar orbit, and docks with Michael Collins aboard Columbia.',
+      },
+      {
+        date: 'July 21, 1969',
+        year: 1969,
+        title: 'Jettisoned in Silent Lunar Orbit',
+        description: 'With Moon rocks safely aboard Columbia, Eagle’s ascent stage is cast adrift in lunar orbit—and contact is never made again.',
+      },
+      {
+        date: 'August 2021',
+        year: 2021,
+        title: 'Orbital Mystery Reopened',
+        description: 'New computer gravity modeling shows Eagle’s exact starting orbit might be strangely stable—meaning it could still circle the Moon unseen!',
+      },
+    ],
+    story: {
+      title: 'The Ghost of Tranquility Base',
+      frontlineCallsign: 'LM-5 Eagle',
+      chapters: [
+        {
+          chapterTitle: 'Chapter 1: One Giant Leap, Then Liftoff',
+          setting: 'Tranquility Base, Moon, July 1969',
+          text: 'After collecting 21.5 kilograms of Moon rocks, Armstrong and Aldrin climbed back inside Eagle’s top cabin. One single rocket engine roared to life, leaving Eagle’s gold legs behind on the dust as the top half soared skyward.',
+          kidTakeaway: 'Two-stage landers leave heavy legs behind so the return trip uses far less fuel.',
+        },
+        {
+          chapterTitle: 'Chapter 2: Left Alone Above the Craters',
+          setting: 'Lunar Orbit',
+          text: 'Back inside Command Module Columbia, the three astronauts sealed the hatch and released empty Eagle into the dark. No camera followed it forever. Engineers guessed bumpy lunar gravity would soon pull it down to crash.',
+          kidTakeaway: 'The Moon’s lumpy gravity tugs harder on some places than others, making low orbits tricky.',
+        },
+        {
+          chapterTitle: 'Chapter 3: Could Eagle Still Be Flying?',
+          setting: 'Lunar Reconnaissance & Modern Math',
+          text: 'Decades later, no crash crater has ever been spotted for Eagle—and new supercomputer orbital math suggests its path might have slipped into a rare stable pocket! Until telescopes catch a glint, Eagle’s final chapter remains a true cosmic mystery.',
+          kidTakeaway: 'Science stays exciting when new math helps us search for lost pieces of history.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'apollo-sivb',
+    name: 'Apollo S-IVB Rocket Stages (Solar Orbit)',
+    shortName: 'Apollo S-IVB',
+    categoryId: 'missing-in-action',
+    isFeaturedRequired: true,
+    launchYear: 1969,
+    launchDate: 'November 14, 1969',
+    activeSpan: '5 hours active · 55+ years drifting on solar paths',
+    destination: 'Heliocentric Solar Orbit (J002E3 & Sisters)',
+    statusLabel: 'Silent Rocket Hulks · Tracked Periodically Near Earth–Sun Paths',
+    tagline: 'Giant Saturn V third-stage boosters flung past the Moon into silent solar orbit',
+    kidOverview:
+      'To push Apollo astronauts fast enough to escape Earth’s gravity toward the Moon, the mighty Saturn V rocket used a giant white-and-black third stage called the S-IVB. On early missions like Apollo 8, 9, 10, 11, and 12, those spent empty rocket stages drifted past the Moon into solar orbit—silent, untracked for decades, until Apollo 12’s stage popped back near Earth in 2002 as mystery object J002E3!',
+    motionEnvironment: 'solar-orbit',
+    motionCaption: 'Tumbling slowly in deep solar orbit, silent since finishing its Moon-bound rocket burn.',
+    defaultCameraPos: [4.2, 2.0, 4.6],
+    parts: [
+      {
+        id: 'sivb-tank',
+        name: 'Liquid Hydrogen Tank Hull',
+        role: '17.8-Meter Cryogenic Booster',
+        howItWorked:
+          'This massive white cylinder with bold black roll-stripes held super-cold liquid hydrogen and oxygen. After boosting astronauts to the Moon, it vented remaining pressure and became a drifting hollow shell.',
+        funFact: 'Even empty, an S-IVB stage is nearly as long as a city bus and weighs over 13 metric tons!',
+        explodeOffset: [0, 0, 0],
+        cameraOffset: [3.2, 1.2, 3.4],
+      },
+      {
+        id: 'sivb-iu',
+        name: 'Instrument Unit Guidance Ring',
+        role: 'Saturn V Computer Brain Collar',
+        howItWorked:
+          'Mounted right at the nose of the S-IVB, this metal ring housed gyroscopes and computers that steered the entire 110-meter Saturn V rocket until its batteries died.',
+        funFact: 'In 2002, when astronomers spotted mystery object "J002E3," paint on its hull matched the titanium-white paint of Apollo 12’s S-IVB!',
+        explodeOffset: [0, 1.35, 0],
+        cameraOffset: [2.6, 2.2, 2.8],
+      },
+      {
+        id: 'sivb-j2',
+        name: 'J-2 Restartable Rocket Engine',
+        role: 'Trans-Lunar Injection Engine',
+        howItWorked:
+          'Unlike ordinary rocket engines that only fire once, the J-2 could shut down in Earth orbit and reignite in zero gravity to hurl Apollo crews toward the Moon at 39,000 km/h!',
+        funFact: 'Starting with Apollo 13, NASA aimed later S-IVB stages at the Moon instead of solar orbit so moonquake sensors could study impacts!',
+        explodeOffset: [0, -1.35, 0],
+        cameraOffset: [2.8, -1.0, 3.2],
+      },
+      {
+        id: 'sivb-aps',
+        name: 'Auxiliary Roll Thruster Pods',
+        role: 'Spin & Separation Jets',
+        howItWorked:
+          'Two small side pods kept the giant stage steady during firing and then gently pushed it onto a safe slingshot path past the Moon so it wouldn’t bump the astronauts.',
+        funFact: 'Slingshotting past the Moon sent Apollo 8, 10, 11, and 12’s S-IVB stages into long, wandering orbits around the Sun.',
+        explodeOffset: [1.1, -0.4, 0],
+        cameraOffset: [3.0, -0.4, 2.8],
+      },
+    ],
+    timeline: [
+      {
+        date: 'December 21, 1968',
+        year: 1968,
+        title: 'Apollo 8 S-IVB Enters Solar Orbit',
+        description: 'The first Moon-bound S-IVB pushes Apollo 8 astronauts to lunar orbit and swings past the Moon into solar orbit.',
+      },
+      {
+        date: 'November 14, 1969',
+        year: 1969,
+        title: 'Apollo 12 S-IVB Slingshots Away',
+        description: 'After sending Apollo 12 toward the Moon, its spent S-IVB stage slips past lunar gravity and disappears from tracking.',
+      },
+      {
+        date: 'September 3, 2002',
+        year: 2002,
+        title: 'Mystery Object J002E3 Appears!',
+        description: 'Amateur astronomer Bill Yeung spots an unknown visitor looping around Earth—which spectrum tests reveal is coated in Saturn V white paint!',
+      },
+      {
+        date: 'June 2003',
+        year: 2003,
+        title: 'Back Out to the Sun Until ~2040s',
+        description: 'Earth’s gravity flings the Apollo 12 S-IVB back out into solar orbit, where its silent path continues today.',
+      },
+    ],
+    story: {
+      title: 'The Wandering Giant Rocket Boosters',
+      frontlineCallsign: 'Saturn V S-IVB',
+      chapters: [
+        {
+          chapterTitle: 'Chapter 1: Twice-Fired Thunder',
+          setting: 'Earth Parking Orbit, 1969',
+          text: 'Most rocket stages fire once and fall straight into the ocean. Not the S-IVB! It paused high above Earth, waited for the exact second, then roared back to life to hurl Apollo astronauts all the way toward the Moon.',
+          kidTakeaway: 'Restarting a rocket engine in space lets astronauts aim precisely at another world.',
+        },
+        {
+          chapterTitle: 'Chapter 2: Lost in the Solar Drift',
+          setting: 'Deep Space Past the Moon',
+          text: 'After the astronauts pulled away, the empty S-IVB drifted past the Moon like a quiet white whale. Its radio batteries drained in hours, leaving only Newton’s laws of gravity to guide it along huge looping paths around the Sun.',
+          kidTakeaway: 'Without fuel or radio, a spent rocket becomes a silent artificial asteroid.',
+        },
+        {
+          chapterTitle: 'Chapter 3: The 2002 Return Surprise',
+          setting: 'Sky Survey Telescopes, 2002',
+          text: 'Thirty-three years later, astronomers thought they had found a brand-new mini-moon visiting Earth! Then light reflected off its surface matched titanium-white rocket paint—it was Apollo 12’s lost S-IVB saying a silent hello before drifting back into solar orbit!',
+          kidTakeaway: 'Every spacecraft leaves a trail of physics—even decades later, math and light reveal who it is.',
+        },
+      ],
+    },
+  },
+
+  // =========================================================================
+  // 7. REARGUARD
+  // =========================================================================
+  {
+    id: 'venera-13',
+    name: 'Venera 13 (Soviet Union)',
+    shortName: 'Venera 13',
+    categoryId: 'rearguard',
+    isFeaturedRequired: true,
+    launchYear: 1981,
+    launchDate: 'October 30, 1981',
+    activeSpan: '127 minutes on Venus surface (4× its 32-min design goal)',
+    destination: 'Phoebe Regio, Venus Surface',
+    statusLabel: 'Held Out 127 Minutes in 457°C Crushing Heat & 89-Bar Pressure',
+    tagline: 'Built to survive 32 minutes in Venus’s oven—yet kept beaming color photos for 127 minutes!',
+    kidOverview:
+      'Venus is like standing inside a self-cleaning pizza oven at the bottom of the ocean—457°C heat and crushing air pressure 89 times heavier than Earth’s! Soviet engineers built Venera 13 like a rugged titanium diving bell expecting it to last only 32 minutes. Instead, it drilled rock, snapped the first-ever color photos of Venus, and held the line for a heroic 127 minutes!',
+    motionEnvironment: 'venus-surface',
+    motionCaption: 'Holding firm on scorched Venusian basalt beneath thick amber sulfuric clouds while drilling soil.',
+    defaultCameraPos: [3.8, 2.0, 4.2],
+    parts: [
+      {
+        id: 'venera-hull',
+        name: 'Titanium Pressure Hull & Quartz Eyes',
+        role: '457°C Oven Armor',
+        howItWorked:
+          'A thick, hollow titanium sphere pre-chilled before landing kept delicate cameras and transmitters cool inside, while quartz-crystal windows peered out through periscopes to capture the first color panoramas of Venus.',
+        funFact: 'Venera 13’s cameras revealed an eerie, glowing orange-amber world made of flat dark volcanic rocks!',
+        explodeOffset: [0, 0.25, 0],
+        cameraOffset: [2.6, 1.4, 2.8],
+      },
+      {
+        id: 'venera-braking-ring',
+        name: 'Serrated Aerodynamic Braking Disc',
+        role: 'Parachute-Free Air Brake',
+        howItWorked:
+          'Venus’s sky is so thick near the ground that a parachute would melt and slow the craft too much! Venera 13 folded away its parachute high up and rode down the final 50 km using this notched metal saucer like a giant badminton shuttlecock.',
+        funFact: 'The serrated teeth kept the lander from wobbling wildly as it dropped through the dense air!',
+        explodeOffset: [0, 1.15, 0],
+        cameraOffset: [2.5, 2.2, 2.6],
+      },
+      {
+        id: 'venera-landing-ring',
+        name: 'Scalloped Crush-Ring Base',
+        role: 'Shock-Absorbing Footpad',
+        howItWorked:
+          'Instead of spindly legs that could snap on jagged lava rocks, Venera 13 landed on a hollow, dimpled metal donut built to crumple gently and absorb the impact across any uneven rock slab.',
+        funFact: 'After touchdown, its microphone even recorded the eerie hiss of Venusian wind and the crunch of its own drill!',
+        explodeOffset: [0, -1.0, 0],
+        cameraOffset: [2.6, -0.5, 2.8],
+      },
+      {
+        id: 'venera-drill',
+        name: 'Rock Drill & Color Bar',
+        role: 'First Venus Soil Sampler',
+        howItWorked:
+          'Its extendable arm drilled into rock-hard basalt, sucked dusty rock grains inside a cooled chamber, and tested their chemistry—while a painted color bar sat nearby so Earth scientists could see Venus’s true colors.',
+        funFact: 'Even though the painted bar looked orange in Venus’s thick amber light, computer math revealed the rocks were really dark gray basalt!',
+        explodeOffset: [1.1, -0.25, 0.55],
+        cameraOffset: [3.2, 0.8, 3.0],
+      },
+    ],
+    timeline: [
+      {
+        date: 'October 30, 1981',
+        year: 1981,
+        title: 'Launch Toward Venus',
+        description: 'Soviet Venera 13 blasts off aboard a Proton rocket on a four-month cruise toward Earth’s hot twin.',
+      },
+      {
+        date: 'March 1, 1982',
+        year: 1982,
+        title: 'Plunge Through Sulfuric Clouds',
+        description: 'Releases its parachute at 47 km altitude and glides safely down on its serrated metal braking disc.',
+      },
+      {
+        date: 'March 1, 1982 (+127 min)',
+        year: 1982,
+        title: 'Four Times Longer Than Expected!',
+        description: 'Designed for 32 minutes, Venera 13 transmits color panoramas, rock chemistry, and surface sounds for 2 hours and 7 minutes before the oven heat overwhelms its radio.',
+      },
+    ],
+    story: {
+      title: '127 Minutes in a Volcanic Oven',
+      frontlineCallsign: 'Venera 13 · Rearguard Station',
+      chapters: [
+        {
+          chapterTitle: 'Chapter 1: Into the Amber Pressure Cooker',
+          setting: 'Venus Upper Clouds, March 1, 1982',
+          text: 'Dropping through thick clouds of sulfuric acid, Venera 13 knew a terrible truth: nothing could survive forever on Venus’s floor. Temperatures there melt lead, and the air presses down like a deep ocean trench.',
+          kidTakeaway: 'Pre-chilling a thick titanium sphere buys precious extra minutes before extreme heat leaks inside.',
+        },
+        {
+          chapterTitle: 'Chapter 2: Snapshot of an Alien World',
+          setting: 'Phoebe Regio, Surface of Venus',
+          text: 'Thump! Venera 13’s crush-ring kissed dark basalt rock. Right away, its camera lens caps popped off, its drill bit buzzed into stone, and the very first full-color photos of Venus’s rocky floor beamed 65 million km back to Earth!',
+          kidTakeaway: 'When you only have minutes to work, automated choreography captures science fast.',
+        },
+        {
+          chapterTitle: 'Chapter 3: Holding the Line Past Midnight',
+          setting: 'T+127 Minutes on Surface',
+          text: 'The 32-minute clock came and went—yet Venera 13 kept singing! Forty minutes, sixty minutes, ninety minutes, 127 whole minutes of precious data poured home before 457°C heat finally silenced its circuits.',
+          kidTakeaway: 'Tough, careful engineering lets explorers outlast the harshest worlds long past expectations.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'insight',
+    name: 'Mars InSight (NASA)',
+    shortName: 'InSight',
+    categoryId: 'rearguard',
+    isFeaturedRequired: true,
+    launchYear: 2018,
+    launchDate: 'May 5, 2018',
+    activeSpan: '4+ Earth years listening on Mars (Nov 2018 – Dec 2022)',
+    destination: 'Elysium Planitia, Mars',
+    statusLabel: 'Mission Ended Dec 2022 · Dust Buried Solar Arrays',
+    tagline: 'Kept listening for deep marsquakes for months while Martian dust slowly buried its solar wings',
+    kidOverview:
+      'Instead of driving around like a rover, NASA’s InSight was a robotic doctor checking Mars’s heartbeat! Sitting still in Elysium Planitia, it set a super-sensitive stethoscope right onto the red dirt and listened to over 1,300 marsquakes—even as sticky Martian dust piled thicker and thicker on its solar wings until December 2022.',
+    motionEnvironment: 'mars-surface',
+    motionCaption: 'Standing vigil on dusty Elysium Planitia while listening for deep seismic marsquakes.',
+    defaultCameraPos: [3.8, 2.2, 4.2],
+    parts: [
+      {
+        id: 'insight-deck',
+        name: 'Octagonal Deck & Tripod Legs',
+        role: 'Stationary Seismic Base',
+        howItWorked:
+          'Unlike rovers with wheels, InSight planted three sturdy shock-absorbing legs into the dirt so no rolling motors would shake its delicate earthquake sensors.',
+        funFact: 'Every bump of wind or temperature creak had to be measured so engineers wouldn’t mistake it for a marsquake!',
+        explodeOffset: [0, 0, 0],
+        cameraOffset: [2.8, 1.5, 3.0],
+      },
+      {
+        id: 'insight-solar',
+        name: 'Twin Fan-Shaped Solar Arrays',
+        role: 'Dust-Challenged Power Wings',
+        howItWorked:
+          'Two wide, umbrella-like solar circles unfolded on landing day to soak up sunlight. Over four years, fine red dust settled across them like snow, slowly shrinking power until only the seismometer could stay awake.',
+        funFact: 'Engineers even used InSight’s scoop arm to trickle sand beside the panels—creating tiny wind gusts that blew a little dust away and bought extra weeks of science!',
+        explodeOffset: [1.3, 0.25, 0],
+        cameraOffset: [3.4, 2.0, 2.8],
+      },
+      {
+        id: 'insight-seis',
+        name: 'SEIS Dome Seismometer & Tether',
+        role: 'Mars Heartbeat Listener',
+        howItWorked:
+          'Placed gently onto the ground in front of the lander and covered by a white wind-and-heat dome, SEIS detected vibrations smaller than the width of a single hydrogen atom—revealing Mars’s liquid core and crust layers!',
+        funFact: 'SEIS recorded over 1,319 marsquakes, including shockwaves from brand-new meteor impacts!',
+        explodeOffset: [0, -0.3, 1.2],
+        cameraOffset: [2.2, 0.6, 3.4],
+      },
+      {
+        id: 'insight-arm',
+        name: 'Robotic Grapple Arm',
+        role: 'Instrument Placer & Dust Trickster',
+        howItWorked:
+          'InSight became the first spacecraft ever to use a robotic arm to pick science gear off its own back and set it carefully directly onto another planet’s soil.',
+        funFact: 'InSight’s arm stayed on duty even near the end, scooping dust to help clean its own solar wings!',
+        explodeOffset: [-0.95, 0.9, 0.45],
+        cameraOffset: [-2.4, 2.0, 2.8],
+      },
+    ],
+    timeline: [
+      {
+        date: 'November 26, 2018',
+        year: 2018,
+        title: 'Touchdown on Elysium Planitia',
+        description: 'InSight lands softly on Mars and unfolds its two round decagonal solar wings.',
+      },
+      {
+        date: 'December 19, 2018',
+        year: 2018,
+        title: 'SEIS Placed Directly on Mars Soil',
+        description: 'Robotic arm sets the copper-and-white seismometer onto the Martian dirt to hear underground quakes.',
+      },
+      {
+        date: '2021–2022',
+        year: 2022,
+        title: 'Listening Through Gathering Dust',
+        description: 'Dust storms dim power down to a trickle, yet teams turn off heaters and cameras so SEIS can keep recording giant quakes.',
+      },
+      {
+        date: 'December 21, 2022',
+        year: 2022,
+        title: 'Final Quiet Sign-Off',
+        description: 'After two missed radio check-ins and a farewell selfie ("My power’s really low"), NASA officially concludes the mission.',
+      },
+    ],
+    story: {
+      title: 'The Quiet Listener Under Gathering Dust',
+      frontlineCallsign: 'InSight · Elysium Vigil',
+      chapters: [
+        {
+          chapterTitle: 'Chapter 1: Listening to a Planet’s Pulse',
+          setting: 'Elysium Planitia, 2019',
+          text: 'For centuries, humans wondered what lay beneath Mars’s rusty skin. InSight set its dome stethoscope straight onto the dirt—and heard a faint rumble! Mars wasn’t dead inside; it shook with real marsquakes.',
+          kidTakeaway: 'Seismic waves bounce off deep underground layers like sonar, revealing a planet’s hidden core.',
+        },
+        {
+          chapterTitle: 'Chapter 2: Fighting Dust With Clever Tricks',
+          setting: 'Martian Winter, 2021–2022',
+          text: 'Month by month, reddish dust blanketed InSight’s solar fans until power plunged from 5,000 watt-hours to barely enough for a lightbulb. Instead of giving up, engineers shut down everything else so SEIS could keep listening!',
+          kidTakeaway: 'When power dwindles, sacrificing non-essential gear lets the main science mission hold out longer.',
+        },
+        {
+          chapterTitle: 'Chapter 3: The Last Farewell Transmission',
+          setting: 'December 2022',
+          text: 'After spotting a massive magnitude-5 marsquake and meteor impacts, dust finally covered the wings completely. InSight beamed one last dusty sunset photo home—"Don’t worry about me"—and held its post until silence.',
+          kidTakeaway: 'InSight measured Mars’s crust, mantle, and core for the very first time in history.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'philae',
+    name: 'Philae (ESA/DLR)',
+    shortName: 'Philae',
+    categoryId: 'rearguard',
+    isFeaturedRequired: true,
+    launchYear: 2004,
+    launchDate: 'March 2, 2004 (Rosetta) · Landed Nov 12, 2014',
+    activeSpan: '60 hours on battery + brief 2015 sunlit wake-ups',
+    destination: 'Comet 67P / Churyumov-Gerasimenko',
+    statusLabel: 'Asleep in Comet Cliff Shadow · Spotted by Rosetta in 2016',
+    tagline: 'Bounced into a freezing comet cliff shadow—yet ran 60 hours on battery and woke briefly in 2015!',
+    kidOverview:
+      'Landing on a giant rubber-duck-shaped comet racing through space was one of the hardest tricks ever attempted! When Philae’s harpoons failed to fire on Comet 67P, it bounced twice and settled wedged beside a dark rocky cliff. Starved of sunlight, Philae fought through its 60-hour battery life—and even surprised Earth by waking up briefly in 2015 when the comet neared the Sun!',
+    motionEnvironment: 'comet-surface',
+    motionCaption: 'Braced in deep cliff shadow on Comet 67P as faint icy plumes drift past into starry space.',
+    defaultCameraPos: [3.8, 2.0, 4.2],
+    parts: [
+      {
+        id: 'philae-body',
+        name: 'Solar-Covered Carbon Body',
+        role: 'Shadow-Starved Power Box',
+        howItWorked:
+          'Almost every outer wall of Philae was wrapped in dark solar cells meant to recharge it for months—but wedged under a tall cliff, it received only about 1.5 hours of weak sunlight per comet day instead of 6+ hours.',
+        funFact: 'Comet 67P’s icy dust was actually darker than charcoal, making solar reflection super dim!',
+        explodeOffset: [0, 0.25, 0],
+        cameraOffset: [2.6, 1.4, 2.8],
+      },
+      {
+        id: 'philae-legs',
+        name: '3 Tripod Legs & Ice Screws',
+        role: 'Low-Gravity Anchor Feet',
+        howItWorked:
+          'Gravity on Comet 67P is 100,000 times weaker than Earth’s—so a gentle touch makes you bounce! Philae’s three folding spider legs carried ice screws at their toes to grip the snowy crust.',
+        funFact: 'Philae actually bounced a full kilometer high off the comet before finally coming to rest at Abydos!',
+        explodeOffset: [0, -1.05, 0],
+        cameraOffset: [2.8, -0.5, 3.0],
+      },
+      {
+        id: 'philae-instruments',
+        name: 'CONSERT Radar & Magnetometer Boom',
+        role: 'Comet X-Ray & Organic Sniffers',
+        howItWorked:
+          'Even wedged sideways, Philae fired radar waves straight through the comet’s heart to orbiter Rosetta, sniffed carbon molecules for life’s building blocks, and hammered to test the rock-hard ice.',
+        funFact: 'Philae discovered organic carbon molecules and water vapor on the comet within hours of touchdown!',
+        explodeOffset: [-1.0, 0.75, -0.4],
+        cameraOffset: [-2.6, 1.8, 2.8],
+      },
+      {
+        id: 'philae-battery',
+        name: '60-Hour Primary Battery Core',
+        role: 'Emergency Science Reserve',
+        howItWorked:
+          'Engineers packed an un-rechargeable 60-hour primary battery inside an insulated warm vault so even if solar panels never saw sun, Philae could still rush through all its core experiments before freezing.',
+        funFact: 'Just 7 months later in June 2015, sunshine warmed Philae enough to whisper "Hello Earth, I’m awake!" before going silent forever.',
+        explodeOffset: [0.95, 0.25, 0.55],
+        cameraOffset: [2.6, 1.2, 2.6],
+      },
+    ],
+    timeline: [
+      {
+        date: 'March 2, 2004',
+        year: 2004,
+        title: 'Launch Aboard Rosetta',
+        description: 'Philae rides piggyback on ESA’s Rosetta orbiter on a 10-year looping chase after Comet 67P.',
+      },
+      {
+        date: 'November 12, 2014',
+        year: 2014,
+        title: 'First Ever Comet Landing & Bounce',
+        description: 'Touches down, bounces twice across the comet, and settles tucked inside dark rocky cliffs at Abydos.',
+      },
+      {
+        date: 'November 15, 2014',
+        year: 2014,
+        title: '60 Hours of Heroic Science Complete',
+        description: 'Beams home panoramas, organic chemistry, and radar scans right before its primary battery drains to zero.',
+      },
+      {
+        date: 'June – July 2015',
+        year: 2015,
+        title: 'Surprise Summer Wake-Up!',
+        description: 'As Comet 67P swoops closer to the Sun, warmth wakes Philae briefly for 8 faint check-ins before eternal hibernation.',
+      },
+    ],
+    story: {
+      title: 'Hold Fast in the Comet’s Shadow',
+      frontlineCallsign: 'Philae · Abydos Outpost',
+      chapters: [
+        {
+          chapterTitle: 'Chapter 1: Two Giant Bounces',
+          setting: 'Comet 67P, November 12, 2014',
+          text: 'Imagine jumping off a trampoline on a tiny iceberg with almost no gravity! When Philae’s harpoons didn’t anchor it down, the brave lander bounced high into starry blackness—for two whole hours—before settling wedged sideways beside tall rocky cliffs.',
+          kidTakeaway: 'On tiny comets, gravity is so weak that a tiny bounce sends a spacecraft flying like a feather.',
+        },
+        {
+          chapterTitle: 'Chapter 2: Racing the 60-Hour Clock',
+          setting: 'Deep Cliff Shadow at Abydos',
+          text: 'Surrounding rock walls blocked almost all sunlight, turning Philae’s home into an ice-cold cave at -160°C. Knowing its primary battery had just 60 hours left, Philae skipped sleep, photographed the cliffs, sniffed organic molecules, and sent every byte upward to Rosetta!',
+          kidTakeaway: 'Backup battery power lets a lander finish vital discoveries even when landing goes sideways.',
+        },
+        {
+          chapterTitle: 'Chapter 3: A Brief Summer Hello',
+          setting: 'Near Perihelion, June 2015',
+          text: 'Seven months later, as Comet 67P swung close to the Sun, one stray sunbeam warmed Philae’s solar walls! For a few thrilling days in 2015, Philae woke up and pinged Rosetta before the comet raced back out into deep, cold night.',
+          kidTakeaway: 'Even in deep shadow, a smart sleep-and-wake system can give a silent craft one last voice.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'phoenix',
+    name: 'Phoenix Mars Lander (NASA)',
+    shortName: 'Phoenix',
+    categoryId: 'rearguard',
+    isFeaturedRequired: true,
+    launchYear: 2007,
+    launchDate: 'August 4, 2007',
+    activeSpan: '5 months in Mars north polar summer (May – Nov 2008)',
+    destination: 'Vastitas Borealis (Mars Arctic)',
+    statusLabel: 'Outlasted Polar Summer · Overwhelmed by Polar Winter Frost (Nov 2008)',
+    tagline: 'Scooped real Martian water ice and kept reporting until polar winter sunlight vanished in late 2008',
+    kidOverview:
+      'NASA sent Phoenix to the frozen arctic plains of Mars—closer to a planet’s north pole than any lander had ever gone! Phoenix dug trenches right into buried water ice and even watched snow fall from Martian clouds, holding its ground until the polar Sun sank below the horizon and winter darkness froze it solid in November 2008.',
+    motionEnvironment: 'mars-polar',
+    motionCaption: 'Standing watch on frosty Martian polar permafrost as pale twilight shadows lengthen.',
+    defaultCameraPos: [3.8, 2.2, 4.2],
+    parts: [
+      {
+        id: 'phoenix-deck',
+        name: 'Gold-Shielded Deck & Tripod Legs',
+        role: 'Arctic Ice Base',
+        howItWorked:
+          'Built partly from spare spacecraft hardware—rising from the ashes like the mythical Phoenix!—this insulated deck sheltered miniature chemistry ovens from sub-zero Martian polar nights.',
+        funFact: 'Phoenix’s descent thruster exhaust actually blew away thin dirt right underneath it, uncovering a sheet of bright white ice under its own legs!',
+        explodeOffset: [0, 0, 0],
+        cameraOffset: [2.8, 1.5, 3.0],
+      },
+      {
+        id: 'phoenix-solar',
+        name: 'Twin Octagonal Solar Arrays',
+        role: 'Polar Sunlight Collectors',
+        howItWorked:
+          'Designed to run during 24-hour polar daylight, these blue solar fans powered Phoenix for 152 Martian days—until late-2008 winter brought dust clouds and long freezing nights that starved the batteries.',
+        funFact: 'Phoenix’s solar arrays lasted more than two months longer than its original 90-day mission plan!',
+        explodeOffset: [1.3, 0.25, 0],
+        cameraOffset: [3.4, 2.0, 2.8],
+      },
+      {
+        id: 'phoenix-arm',
+        name: '2.3-Meter Digging Arm & TEGA Ovens',
+        role: 'Ice Excavator & Taste Tester',
+        howItWorked:
+          'A tough silver robot arm with a serrated scoop scraped through rock-hard icy permafrost and dropped chunks into tiny ovens that baked them—proving for the first time by direct touch that frozen water ice sits right beneath Martian soil!',
+        funFact: 'When Phoenix exposed pale white chunks in a trench named "Dodo-Goldilocks," they vanished in four days—sublimating straight from solid ice into vapor!',
+        explodeOffset: [0.95, 0.55, 0.85],
+        cameraOffset: [3.0, 1.4, 3.2],
+      },
+      {
+        id: 'phoenix-met',
+        name: 'Weather Mast & Green Laser LIDAR',
+        role: 'Polar Snow & Wind Watcher',
+        howItWorked:
+          'Rising above the deck, Canada’s weather station measured freezing temperatures, pressure, and spinning telltale winds—while a green laser shot beams straight into Martian clouds and spotted real snow falling!',
+        funFact: 'Phoenix detected snowflakes drifting down from clouds 4 kilometers above Mars before evaporating in midair!',
+        explodeOffset: [-0.85, 1.05, -0.45],
+        cameraOffset: [-2.6, 2.2, 2.8],
+      },
+    ],
+    timeline: [
+      {
+        date: 'August 4, 2007',
+        year: 2007,
+        title: 'Launch to Mars’s Frozen North',
+        description: 'Delta II rocket sends Phoenix on a direct polar cruise toward Vastitas Borealis.',
+      },
+      {
+        date: 'May 25, 2008',
+        year: 2008,
+        title: 'Arctic Touchdown on Polygons',
+        description: 'Lands on patterned permafrost ground where buried ice waits just centimeters beneath dusty soil.',
+      },
+      {
+        date: 'June – July 2008',
+        year: 2008,
+        title: 'Real Water Ice Discovered by Touch!',
+        description: 'Phoenix’s scoop digs into bright white permafrost and its TEGA lab confirms pure frozen Martian water.',
+      },
+      {
+        date: 'November 2, 2008',
+        year: 2008,
+        title: 'Final Signal Before Polar Winter',
+        description: 'With the Sun fading and dry-ice frost burying the lander under -120°C polar night, Phoenix transmits its last ping.',
+      },
+    ],
+    story: {
+      title: 'Outlasting the Martian Arctic Night',
+      frontlineCallsign: 'Phoenix · North Polar Watch',
+      chapters: [
+        {
+          chapterTitle: 'Chapter 1: Treasure Beneath the Frost Cracks',
+          setting: 'Vastitas Borealis, May 2008',
+          text: 'Phoenix landed in a strange world of giant cracked dirt polygons—just like Earth’s frozen Arctic tundra! When its cameras peeked underneath the lander, everyone gasped: thruster blasts had uncovered shiny white bedrock made of pure ice!',
+          kidTakeaway: 'Cracked polygon patterns on the ground are clues that frozen ice expands and shrinks underground.',
+        },
+        {
+          chapterTitle: 'Chapter 2: Snowfall on Mars',
+          setting: 'Late Polar Summer, 2008',
+          text: 'As Phoenix baked icy soil inside tiny ovens and tasted snow clouds with its green laser beam, days grew shorter and colder. Dust storms dimmed the Sun while Phoenix raced to save every weather measurement.',
+          kidTakeaway: 'Phoenix proved Mars has real water ice, snow clouds, and soil minerals near its north pole.',
+        },
+        {
+          chapterTitle: 'Chapter 3: Standing Watch Until Dark',
+          setting: 'November 2008',
+          text: 'Finally, polar winter closed in. Carbon-dioxide dry ice froze straight out of the sky onto Phoenix’s solar wings. Holding out to its last milliamp of power, Phoenix sent its final whisper on November 2 before sleeping forever under winter ice.',
+          kidTakeaway: 'Solar explorers at high latitudes trade long summer sunlight for deep winter darkness.',
+        },
+      ],
+    },
+  },
+
+  // =========================================================================
+  // 8. SAFE AT HOME
   // =========================================================================
   {
     id: 'apollo-11-cm',

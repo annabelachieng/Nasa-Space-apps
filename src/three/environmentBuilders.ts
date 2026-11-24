@@ -92,23 +92,51 @@ export function buildMotionEnvironment(
   const streamCount = 60;
   const streamOffsets: { x: number; y: number; z: number; speed: number }[] = [];
 
-  if (envType === 'mars-surface' || envType === 'mars-flight') {
-    // Mars undulating terrain
+  if (
+    envType === 'mars-surface' ||
+    envType === 'mars-polar' ||
+    envType === 'mars-flight' ||
+    envType === 'venus-surface' ||
+    envType === 'comet-surface'
+  ) {
+    const isVenus = envType === 'venus-surface';
+    const isComet = envType === 'comet-surface';
+    const isPolar = envType === 'mars-polar';
+
+    // Undulating planetary/comet terrain
     const terrainGeo = trackGeo(new THREE.PlaneGeometry(56, 56, 48, 48));
     terrainGeo.rotateX(-Math.PI / 2);
     const pos = terrainGeo.attributes.position;
     for (let i = 0; i < pos.count; i++) {
       const x = pos.getX(i);
       const z = pos.getZ(i);
-      pos.setY(i, marsTerrainHeightAt(x, z));
+      let h = marsTerrainHeightAt(x, z);
+      if (isComet) {
+        // Dramatic jagged cliff wall in the background casting deep shadow over Philae
+        const cliffDist = Math.max(0, -z - 3.5);
+        h += cliffDist * 0.48 + Math.sin(x * 0.45) * 0.35;
+      }
+      pos.setY(i, h);
     }
     terrainGeo.computeVertexNormals();
 
     const terrainMat = trackMat(
       new THREE.MeshStandardMaterial({
-        map: textures.marsSurface,
-        color: 0xd9754d,
-        roughness: 0.9,
+        map: isVenus
+          ? textures.venusSurface
+          : isComet
+            ? textures.cometSurface
+            : isPolar
+              ? textures.marsPolarSurface
+              : textures.marsSurface,
+        color: isVenus
+          ? 0xd47a2c
+          : isComet
+            ? 0x4b5563
+            : isPolar
+              ? 0xc49a89
+              : 0xd9754d,
+        roughness: isComet ? 0.94 : 0.9,
         metalness: 0.04,
       })
     );
@@ -117,12 +145,12 @@ export function buildMotionEnvironment(
     marsGround.position.y = -0.05;
     group.add(marsGround);
 
-    // Scattered Martian rocks via InstancedMesh
+    // Scattered rocks / basalt slabs / comet boulders via InstancedMesh
     const rockCount = 44;
     const rockGeo = trackGeo(new THREE.DodecahedronGeometry(0.32, 0));
     const rockMat = trackMat(
       new THREE.MeshStandardMaterial({
-        color: 0x8f432b,
+        color: isVenus ? 0x5c2c12 : isComet ? 0x262b36 : isPolar ? 0x7c5c52 : 0x8f432b,
         roughness: 0.88,
         metalness: 0.06,
       })
@@ -140,24 +168,36 @@ export function buildMotionEnvironment(
       dummy.position.set(rx, ry + 0.04, rz);
       dummy.rotation.set(i * 0.5, i * 1.1, i * 0.3);
       const s = 0.85 + ((i * 19) % 30) / 100; // +-15% variation
-      dummy.scale.set(s * 1.2, s * 0.72, s);
+      dummy.scale.set(
+        s * (isComet ? 1.45 : 1.2),
+        s * (isComet ? 1.1 : 0.72),
+        s
+      );
       dummy.updateMatrix();
       marsRocks.setMatrixAt(i, dummy.matrix);
 
-      rockColor.setHSL(0.04 + (i % 4) * 0.01, 0.52, 0.3 + (i % 5) * 0.04);
+      if (isComet) {
+        rockColor.setHSL(0.6, 0.1, 0.14 + (i % 5) * 0.04);
+      } else if (isVenus) {
+        rockColor.setHSL(0.06 + (i % 3) * 0.015, 0.55, 0.18 + (i % 4) * 0.04);
+      } else if (isPolar) {
+        rockColor.setHSL(0.05, 0.22, 0.36 + (i % 4) * 0.06);
+      } else {
+        rockColor.setHSL(0.04 + (i % 4) * 0.01, 0.52, 0.3 + (i % 5) * 0.04);
+      }
       marsRocks.setColorAt(i, rockColor);
     }
     marsRocks.computeBoundingSphere();
     group.add(marsRocks);
 
-    // Soft radial contact shadow under rover/helicopter
-    const shadGeo = trackGeo(new THREE.PlaneGeometry(3.2, 3.2));
+    // Soft radial contact shadow under rover/lander/helicopter
+    const shadGeo = trackGeo(new THREE.PlaneGeometry(3.4, 3.4));
     shadGeo.rotateX(-Math.PI / 2);
     const shadMat = trackMat(
       new THREE.MeshBasicMaterial({
         map: textures.contactShadow,
         transparent: true,
-        opacity: 0.58,
+        opacity: 0.62,
         depthWrite: false,
       })
     );
@@ -279,16 +319,75 @@ export function buildMotionEnvironment(
     planetMesh = new THREE.Mesh(mercGeo, mercMat);
     planetMesh.position.set(-4.5, -6.8, -8.0);
     group.add(planetMesh);
+  } else if (envType === 'lunar-orbit') {
+    const moonGeo = trackGeo(new THREE.SphereGeometry(8.4, 48, 36));
+    const moonMat = trackMat(
+      new THREE.MeshStandardMaterial({
+        map: textures.mercurySurface,
+        color: 0xd8dce4,
+        roughness: 0.92,
+        metalness: 0.02,
+      })
+    );
+    planetMesh = new THREE.Mesh(moonGeo, moonMat);
+    planetMesh.position.set(0, -10.8, -4.5);
+    planetMesh.receiveShadow = true;
+    group.add(planetMesh);
+  } else if (envType === 'solar-orbit') {
+    const distantSunGeo = trackGeo(new THREE.SphereGeometry(2.8, 32, 24));
+    const distantSunMat = trackMat(
+      new THREE.MeshBasicMaterial({
+        color: 0xfde047,
+      })
+    );
+    planetMesh = new THREE.Mesh(distantSunGeo, distantSunMat);
+    planetMesh.position.set(-8.5, 3.6, -16.5);
+    group.add(planetMesh);
+
+    const sunHaloGeo = trackGeo(new THREE.SphereGeometry(3.7, 28, 20));
+    const sunHaloMat = trackMat(
+      new THREE.MeshBasicMaterial({
+        color: 0xf59e0b,
+        transparent: true,
+        opacity: 0.22,
+        side: THREE.BackSide,
+        depthWrite: false,
+      })
+    );
+    planetMesh.add(new THREE.Mesh(sunHaloGeo, sunHaloMat));
   }
 
-  // Streaming cosmic particles for interstellar / solar-corona / reentry
-  if (envType === 'interstellar' || envType === 'solar-corona' || envType === 'reentry-splashdown') {
+  // Streaming cosmic/atmospheric particles for deep space, Venus haze, comet outgassing, or reentry
+  if (
+    envType === 'interstellar' ||
+    envType === 'solar-corona' ||
+    envType === 'solar-orbit' ||
+    envType === 'reentry-splashdown' ||
+    envType === 'venus-surface' ||
+    envType === 'comet-surface'
+  ) {
     const pGeo = trackGeo(new THREE.SphereGeometry(0.045, 6, 6));
     const pMat = trackMat(
       new THREE.MeshBasicMaterial({
-        color: envType === 'solar-corona' ? 0xfde047 : envType === 'reentry-splashdown' ? 0xfb923c : 0x7dd3fc,
+        color:
+          envType === 'solar-corona'
+            ? 0xfde047
+            : envType === 'solar-orbit'
+              ? 0xc4b5fd
+              : envType === 'venus-surface'
+                ? 0xf59e0b
+                : envType === 'comet-surface'
+                  ? 0xe2e8f0
+                  : envType === 'reentry-splashdown'
+                    ? 0xfb923c
+                    : 0x7dd3fc,
         transparent: true,
-        opacity: 0.65,
+        opacity:
+          envType === 'solar-orbit'
+            ? 0.45
+            : envType === 'venus-surface'
+              ? 0.5
+              : 0.65,
       })
     );
     streamParticles = new THREE.InstancedMesh(pGeo, pMat, streamCount);
@@ -297,7 +396,10 @@ export function buildMotionEnvironment(
         x: ((i * 73) % 140) / 10 - 7,
         y: ((i * 37) % 100) / 10 - 5,
         z: ((i * 53) % 240) / 10 - 12,
-        speed: 4 + (i % 5) * 1.4,
+        speed:
+          envType === 'venus-surface' || envType === 'comet-surface'
+            ? 1.4 + (i % 4) * 0.5
+            : 4 + (i % 5) * 1.4,
       });
     }
     streamParticles.frustumCulled = false;
@@ -331,6 +433,18 @@ export function buildMotionEnvironment(
       if (scene.fog instanceof THREE.FogExp2) {
         scene.fog.color.setHex(0x2a140d);
         scene.fog.density = 0.032;
+      }
+    } else if (isMotionMode && envType === 'venus-surface') {
+      scene.background = new THREE.Color(0x452208);
+      if (scene.fog instanceof THREE.FogExp2) {
+        scene.fog.color.setHex(0x452208);
+        scene.fog.density = 0.045;
+      }
+    } else if (isMotionMode && envType === 'mars-polar') {
+      scene.background = new THREE.Color(0x1b1e29);
+      if (scene.fog instanceof THREE.FogExp2) {
+        scene.fog.color.setHex(0x1b1e29);
+        scene.fog.density = 0.028;
       }
     } else {
       scene.background = new THREE.Color(0x070b16);
@@ -385,24 +499,47 @@ export function buildMotionEnvironment(
     }
 
     if (envType === 'mars-surface') {
-      // Opportunity drives a gentle circular patrol over Martian terrain
-      const radius = 2.6;
-      const angle = t * 0.28;
-      const rx = Math.cos(angle) * radius;
-      const rz = Math.sin(angle) * radius;
-      const groundY = marsTerrainHeightAt(rx, rz);
+      if (craft.wheels.length > 0) {
+        // Rover drives a gentle circular patrol over Martian terrain
+        const radius = 2.6;
+        const angle = t * 0.28;
+        const rx = Math.cos(angle) * radius;
+        const rz = Math.sin(angle) * radius;
+        const groundY = marsTerrainHeightAt(rx, rz);
 
-      craft.root.position.set(rx, groundY - 0.04, rz);
-      craft.root.rotation.set(
-        Math.sin(angle * 2) * 0.05,
-        -angle,
-        Math.cos(angle * 2) * 0.04
-      );
-      craft.wheels.forEach((w) => {
-        w.rotation.x += 1.6 * dt * speedMult;
-      });
+        craft.root.position.set(rx, groundY - 0.04, rz);
+        craft.root.rotation.set(
+          Math.sin(angle * 2) * 0.05,
+          -angle,
+          Math.cos(angle * 2) * 0.04
+        );
+        craft.wheels.forEach((w) => {
+          w.rotation.x += 1.6 * dt * speedMult;
+        });
+        if (contactShadowPlane) {
+          contactShadowPlane.position.set(rx, groundY + 0.02, rz);
+        }
+      } else {
+        // Stationary lander (InSight) holds its ground firmly in Elysium Planitia
+        const groundY = marsTerrainHeightAt(0, 0);
+        craft.root.position.set(0, groundY + 0.72, 0);
+        craft.root.rotation.set(0, Math.sin(t * 0.15) * 0.04, 0);
+        if (contactShadowPlane) {
+          contactShadowPlane.position.set(0, groundY + 0.02, 0);
+        }
+      }
+    } else if (
+      envType === 'venus-surface' ||
+      envType === 'comet-surface' ||
+      envType === 'mars-polar'
+    ) {
+      // Rearguard stationary landers stand firm on harsh planetary/comet surfaces
+      const groundY = marsTerrainHeightAt(0, 0);
+      const liftY = envType === 'venus-surface' ? 0.85 : envType === 'comet-surface' ? 0.86 : 0.74;
+      craft.root.position.set(0, groundY + liftY, 0);
+      craft.root.rotation.set(0, envType === 'comet-surface' ? 0.35 : 0, 0);
       if (contactShadowPlane) {
-        contactShadowPlane.position.set(rx, groundY + 0.02, rz);
+        contactShadowPlane.position.set(0, groundY + 0.02, 0);
       }
     } else if (envType === 'mars-flight') {
       // Ingenuity hovers and sweeps in a figure-8 over Martian dunes
@@ -422,9 +559,9 @@ export function buildMotionEnvironment(
         const s = 0.7 + (2.0 - hoverH) * 0.2;
         contactShadowPlane.scale.setScalar(Math.max(0.5, s));
       }
-    } else if (envType === 'earth-orbit') {
-      craft.root.position.set(Math.sin(t * 0.6) * 0.8, 0.35 + Math.sin(t * 1.2) * 0.2, 0);
-      craft.root.rotation.set(0.12, t * 0.4, Math.sin(t * 0.7) * 0.14);
+    } else if (envType === 'earth-orbit' || envType === 'lunar-orbit') {
+      craft.root.position.set(Math.sin(t * 0.55) * 0.85, 0.35 + Math.sin(t * 1.1) * 0.22, 0);
+      craft.root.rotation.set(0.12, t * 0.35, Math.sin(t * 0.65) * 0.14);
     } else if (envType === 'reentry-splashdown') {
       // Slight aerodynamic buffeting while diving behind heat shield
       craft.root.position.set(Math.sin(t * 7) * 0.04, Math.cos(t * 5.5) * 0.05, 0);
@@ -440,6 +577,10 @@ export function buildMotionEnvironment(
     } else if (envType === 'solar-corona') {
       craft.root.position.set(Math.sin(t * 0.8) * 0.6, Math.cos(t * 1.1) * 0.3, 0);
       craft.root.rotation.set(0, Math.sin(t * 0.4) * 0.08, 0);
+    } else if (envType === 'solar-orbit') {
+      // Slow silent ghost-stage drift along heliocentric orbit
+      craft.root.position.set(Math.sin(t * 0.4) * 0.5, Math.sin(t * 0.75) * 0.22, 0);
+      craft.root.rotation.set(0.18 + Math.sin(t * 0.3) * 0.08, t * 0.22, t * 0.14);
     } else if (envType === 'interstellar') {
       craft.root.position.set(0, Math.sin(t * 0.9) * 0.16, 0);
       craft.root.rotation.set(0.08, Math.sin(t * 0.35) * 0.16, Math.cos(t * 0.4) * 0.06);

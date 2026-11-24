@@ -923,6 +923,276 @@ export function buildSpacecraftModel(
       root.add(plasmaShell);
       break;
     }
+
+    // -----------------------------------------------------------------------
+    // 6M-A. APOLLO 10 LUNAR MODULE "SNOOPY" ASCENT STAGE
+    // -----------------------------------------------------------------------
+    case 'apollo-10-snoopy': {
+      const mCabin = makeMaterials();
+      createPartGroup('snoopy-cabin');
+      addMeshToPart('snoopy-cabin', trackGeo(createBeveledPolygonGeometry(6, 0.92, 0.96, 0.05)), mCabin.brushedTitanium, [0, 0.06, 0], [Math.PI / 2, 0, 0]);
+      addMeshToPart('snoopy-cabin', trackGeo(new THREE.BoxGeometry(0.95, 0.68, 0.62)), mCabin.polishedAlum, [0, 0.05, 0.56]);
+      addMeshToPart('snoopy-cabin', trackGeo(new THREE.BoxGeometry(0.24, 0.22, 0.08)), mCabin.lensCyan, [-0.26, 0.14, 0.88], [-0.2, 0.2, 0]);
+      addMeshToPart('snoopy-cabin', trackGeo(new THREE.BoxGeometry(0.24, 0.22, 0.08)), mCabin.lensCyan, [0.26, 0.14, 0.88], [-0.2, -0.2, 0]);
+
+      const mDock = makeMaterials();
+      createPartGroup('snoopy-docking');
+      addMeshToPart('snoopy-docking', trackGeo(new THREE.CylinderGeometry(0.38, 0.44, 0.28, 24)), mDock.darkCarbon, [0, 0.68, 0]);
+      addMeshToPart('snoopy-docking', trackGeo(new THREE.TorusGeometry(0.39, 0.05, 10, 24)), mDock.polishedAlum, [0, 0.81, 0], [Math.PI / 2, 0, 0]);
+
+      const mRcs = makeMaterials();
+      createPartGroup('snoopy-rcs');
+      const quadCoords: [number, number][] = [
+        [-0.86, 0.68],
+        [0.86, 0.68],
+        [-0.86, -0.64],
+        [0.86, -0.64],
+      ];
+      quadCoords.forEach(([qx, qz]) => {
+        addMeshToPart('snoopy-rcs', trackGeo(new THREE.CylinderGeometry(0.06, 0.06, 0.34, 10)), mRcs.brushedTitanium, [qx * 0.78, 0.2, qz * 0.78], [0, 0, Math.PI / 2]);
+        addMeshToPart('snoopy-rcs', trackGeo(new THREE.BoxGeometry(0.16, 0.16, 0.16)), mRcs.darkCarbon, [qx, 0.2, qz]);
+        addMeshToPart('snoopy-rcs', trackGeo(new THREE.ConeGeometry(0.055, 0.14, 10)), mRcs.copperAccent, [qx, 0.34, qz]);
+        addMeshToPart('snoopy-rcs', trackGeo(new THREE.ConeGeometry(0.055, 0.14, 10)), mRcs.copperAccent, [qx, 0.06, qz], [Math.PI, 0, 0]);
+      });
+      addMeshToPart('snoopy-rcs', trackGeo(createDishGeometry(0.28, 0.08, 20)), mRcs.whiteDish, [0, 0.62, 0.68], [Math.PI * 0.35, 0, 0]);
+
+      const mEng = makeMaterials();
+      createPartGroup('snoopy-engine');
+      [-1, 1].forEach((side) => {
+        addMeshToPart('snoopy-engine', trackGeo(new THREE.SphereGeometry(0.38, 18, 16)), mEng.polishedAlum, [side * 0.92, -0.05, -0.08]);
+      });
+      addMeshToPart('snoopy-engine', trackGeo(new THREE.CylinderGeometry(0.26, 0.34, 0.32, 20)), mEng.darkCarbon, [0, -0.55, 0]);
+      addMeshToPart('snoopy-engine', trackGeo(createDishGeometry(0.32, -0.26, 24)), mEng.copperAccent, [0, -0.68, 0]);
+      break;
+    }
+
+    // -----------------------------------------------------------------------
+    // 6M-B. APOLLO 11 LUNAR MODULE "EAGLE" ASCENT STAGE
+    // -----------------------------------------------------------------------
+    case 'apollo-11-eagle': {
+      const mCabin = makeMaterials();
+      createPartGroup('eagle-cabin');
+      addMeshToPart('eagle-cabin', trackGeo(createBeveledPolygonGeometry(6, 0.9, 0.94, 0.05)), mCabin.darkCarbon, [0, 0.06, 0], [Math.PI / 2, 0, 0]);
+      addMeshToPart('eagle-cabin', trackGeo(new THREE.BoxGeometry(0.92, 0.66, 0.58)), mCabin.brushedTitanium, [0, 0.05, 0.55]);
+      addMeshToPart('eagle-cabin', trackGeo(new THREE.BoxGeometry(0.84, 0.24, 0.12)), mCabin.goldFoil, [0, -0.24, 0.82]);
+      addMeshToPart('eagle-cabin', trackGeo(new THREE.BoxGeometry(0.22, 0.2, 0.08)), mCabin.lensCyan, [-0.25, 0.15, 0.86], [-0.2, 0.2, 0]);
+      addMeshToPart('eagle-cabin', trackGeo(new THREE.BoxGeometry(0.22, 0.2, 0.08)), mCabin.lensCyan, [0.25, 0.15, 0.86], [-0.2, -0.2, 0]);
+
+      const mTanks = makeMaterials();
+      createPartGroup('eagle-tanks');
+      [-1, 1].forEach((side) => {
+        addMeshToPart('eagle-tanks', trackGeo(new THREE.SphereGeometry(0.42, 20, 18)), mTanks.goldFoil, [side * 0.95, -0.02, -0.05]);
+        addMeshToPart('eagle-tanks', trackGeo(new THREE.CylinderGeometry(0.05, 0.05, 0.55, 10)), mTanks.polishedAlum, [side * 0.65, 0.2, -0.05], [0, 0, Math.PI / 2]);
+      });
+
+      const mAnt = makeMaterials();
+      createPartGroup('eagle-antenna');
+      addMeshToPart('eagle-antenna', trackGeo(createDishGeometry(0.46, 0.14, 24)), mAnt.whiteDish, [-0.66, 0.38, 0.68], [Math.PI * 0.38, -0.35, 0]);
+      addMeshToPart('eagle-antenna', trackGeo(createDishGeometry(0.26, 0.08, 20)), mAnt.whiteDish, [0.22, 0.7, 0.52], [Math.PI * 0.35, 0, 0]);
+      addMeshToPart('eagle-antenna', trackGeo(new THREE.CylinderGeometry(0.02, 0.02, 0.65, 8)), mAnt.polishedAlum, [0.15, 0.85, -0.25]);
+
+      const mEng = makeMaterials();
+      createPartGroup('eagle-engine');
+      addMeshToPart('eagle-engine', trackGeo(new THREE.CylinderGeometry(0.38, 0.42, 0.24, 20)), mEng.goldFoil, [0, -0.48, 0]);
+      addMeshToPart('eagle-engine', trackGeo(createDishGeometry(0.34, -0.3, 24)), mEng.darkCarbon, [0, -0.62, 0]);
+      break;
+    }
+
+    // -----------------------------------------------------------------------
+    // 6M-C. APOLLO S-IVB THIRD STAGE (SOLAR ORBIT)
+    // -----------------------------------------------------------------------
+    case 'apollo-sivb': {
+      const mTank = makeMaterials();
+      createPartGroup('sivb-tank');
+      addMeshToPart('sivb-tank', trackGeo(new THREE.CylinderGeometry(0.76, 0.76, 2.15, 32)), mTank.whiteDish, [0, 0.1, 0]);
+      addMeshToPart('sivb-tank', trackGeo(new THREE.CylinderGeometry(0.77, 0.77, 0.32, 32)), mTank.darkCarbon, [0, -0.45, 0]);
+      addMeshToPart('sivb-tank', trackGeo(new THREE.CylinderGeometry(0.77, 0.77, 0.22, 32)), mTank.darkCarbon, [0, 0.78, 0]);
+      addMeshToPart('sivb-tank', trackGeo(new THREE.BoxGeometry(0.14, 1.85, 0.14)), mTank.polishedAlum, [0, 0.1, 0.76]);
+
+      const mIu = makeMaterials();
+      createPartGroup('sivb-iu');
+      addMeshToPart('sivb-iu', trackGeo(new THREE.CylinderGeometry(0.56, 0.76, 0.55, 32)), mIu.brushedTitanium, [0, 1.44, 0]);
+      addMeshToPart('sivb-iu', trackGeo(new THREE.TorusGeometry(0.56, 0.045, 10, 28)), mIu.darkCarbon, [0, 1.72, 0], [Math.PI / 2, 0, 0]);
+      [-1, 1].forEach((side) => {
+        addMeshToPart('sivb-iu', trackGeo(new THREE.CylinderGeometry(0.025, 0.025, 0.52, 8)), mIu.copperAccent, [side * 0.66, 1.68, 0], [0, 0, side * -0.4]);
+      });
+
+      const mJ2 = makeMaterials();
+      createPartGroup('sivb-j2');
+      addMeshToPart('sivb-j2', trackGeo(new THREE.CylinderGeometry(0.74, 0.52, 0.38, 28)), mJ2.brushedTitanium, [0, -1.16, 0]);
+      addMeshToPart('sivb-j2', trackGeo(createDishGeometry(0.48, -0.62, 28)), mJ2.darkCarbon, [0, -1.28, 0]);
+      addMeshToPart('sivb-j2', trackGeo(new THREE.TorusGeometry(0.42, 0.03, 10, 24)), mJ2.copperAccent, [0, -1.65, 0], [Math.PI / 2, 0, 0]);
+
+      const mAps = makeMaterials();
+      createPartGroup('sivb-aps');
+      [-1, 1].forEach((side) => {
+        addMeshToPart('sivb-aps', trackGeo(new THREE.BoxGeometry(0.18, 0.45, 0.24)), mAps.darkCarbon, [side * 0.82, -0.78, 0]);
+        addMeshToPart('sivb-aps', trackGeo(new THREE.ConeGeometry(0.06, 0.16, 10)), mAps.copperAccent, [side * 0.94, -0.78, 0.14], [Math.PI / 2, 0, 0]);
+        addMeshToPart('sivb-aps', trackGeo(new THREE.ConeGeometry(0.06, 0.16, 10)), mAps.copperAccent, [side * 0.94, -0.78, -0.14], [-Math.PI / 2, 0, 0]);
+      });
+      break;
+    }
+
+    // -----------------------------------------------------------------------
+    // 7R-A. VENERA 13 (VENUS LANDER)
+    // -----------------------------------------------------------------------
+    case 'venera-13': {
+      const mHull = makeMaterials();
+      createPartGroup('venera-hull');
+      addMeshToPart('venera-hull', trackGeo(new THREE.SphereGeometry(0.68, 28, 22)), mHull.polishedAlum, [0, 0.18, 0]);
+      addMeshToPart('venera-hull', trackGeo(new THREE.CylinderGeometry(0.62, 0.68, 0.45, 10)), mHull.brushedTitanium, [0, -0.22, 0]);
+      addMeshToPart('venera-hull', trackGeo(new THREE.BoxGeometry(0.32, 0.24, 0.26)), mHull.darkCarbon, [0, -0.05, 0.68]);
+      addMeshToPart('venera-hull', trackGeo(new THREE.CylinderGeometry(0.08, 0.08, 0.1, 14)), mHull.lensCyan, [0, -0.05, 0.82], [Math.PI / 2, 0, 0]);
+
+      const mDrag = makeMaterials();
+      createPartGroup('venera-braking-ring');
+      addMeshToPart('venera-braking-ring', trackGeo(new THREE.CylinderGeometry(0.96, 0.92, 0.08, 24)), mDrag.brushedTitanium, [0, 0.92, 0]);
+      addMeshToPart('venera-braking-ring', trackGeo(new THREE.CylinderGeometry(0.24, 0.34, 0.22, 16)), mDrag.darkCarbon, [0, 0.78, 0]);
+      for (let i = 0; i < 12; i++) {
+        const a = (i / 12) * Math.PI * 2;
+        addMeshToPart('venera-braking-ring', trackGeo(new THREE.BoxGeometry(0.1, 0.12, 0.12)), mDrag.polishedAlum, [Math.cos(a) * 0.94, 0.92, Math.sin(a) * 0.94], [0, -a, 0]);
+      }
+
+      const mRing = makeMaterials();
+      createPartGroup('venera-landing-ring');
+      addMeshToPart('venera-landing-ring', trackGeo(new THREE.TorusGeometry(0.84, 0.15, 14, 32)), mRing.brushedTitanium, [0, -0.72, 0], [Math.PI / 2, 0, 0]);
+      for (let i = 0; i < 8; i++) {
+        const a = (i / 8) * Math.PI * 2;
+        addMeshToPart('venera-landing-ring', trackGeo(new THREE.CylinderGeometry(0.05, 0.05, 0.42, 8)), mRing.darkCarbon, [Math.cos(a) * 0.72, -0.52, Math.sin(a) * 0.72], [Math.sin(a) * 0.35, 0, -Math.cos(a) * 0.35]);
+      }
+
+      const mDrill = makeMaterials();
+      createPartGroup('venera-drill');
+      const drillBoom = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0.42, -0.25, 0.32),
+        new THREE.Vector3(0.95, -0.42, 0.62),
+        new THREE.Vector3(1.18, -0.78, 0.75),
+      ]);
+      addMeshToPart('venera-drill', trackGeo(new THREE.TubeGeometry(drillBoom, 14, 0.045, 8, false)), mDrill.polishedAlum);
+      const drillBit = addMeshToPart('venera-drill', trackGeo(new THREE.ConeGeometry(0.07, 0.32, 12)), mDrill.copperAccent, [1.18, -0.82, 0.75], [Math.PI, 0, 0]);
+      spinParts.push({ obj: drillBit, axis: 'y', speed: 2.5 });
+      addMeshToPart('venera-drill', trackGeo(new THREE.BoxGeometry(0.38, 0.04, 0.1)), mDrill.warmOrange, [-0.55, -0.45, 0.72], [0, 0.4, 0]);
+      break;
+    }
+
+    // -----------------------------------------------------------------------
+    // 7R-B. INSIGHT (MARS SEISMIC LANDER)
+    // -----------------------------------------------------------------------
+    case 'insight': {
+      const mDeck = makeMaterials();
+      createPartGroup('insight-deck');
+      addMeshToPart('insight-deck', trackGeo(createBeveledPolygonGeometry(8, 0.78, 0.32, 0.04)), mDeck.goldFoil, [0, 0, 0], [Math.PI / 2, 0, 0]);
+      addMeshToPart('insight-deck', trackGeo(createDishGeometry(0.28, 0.09, 20)), mDeck.whiteDish, [0.22, 0.32, -0.22], [-0.35, 0, 0]);
+      for (let i = 0; i < 3; i++) {
+        const a = (i / 3) * Math.PI * 2 + Math.PI / 6;
+        addMeshToPart('insight-deck', trackGeo(new THREE.CylinderGeometry(0.035, 0.035, 0.72, 10)), mDeck.brushedTitanium, [Math.cos(a) * 0.72, -0.4, Math.sin(a) * 0.72], [Math.sin(a) * 0.42, 0, -Math.cos(a) * 0.42]);
+        addMeshToPart('insight-deck', trackGeo(new THREE.CylinderGeometry(0.14, 0.16, 0.06, 14)), mDeck.darkCarbon, [Math.cos(a) * 0.92, -0.7, Math.sin(a) * 0.92]);
+      }
+
+      const mSolar = makeMaterials();
+      createPartGroup('insight-solar');
+      [-1, 1].forEach((side) => {
+        addMeshToPart('insight-solar', trackGeo(new THREE.CylinderGeometry(0.03, 0.03, 0.55, 8)), mSolar.brushedTitanium, [side * 0.92, 0.06, 0], [0, 0, Math.PI / 2]);
+        addMeshToPart('insight-solar', trackGeo(new THREE.CylinderGeometry(0.98, 0.98, 0.04, 10)), mSolar.solar, [side * 1.62, 0.06, 0], [0.08, 0, side * -0.05]);
+      });
+
+      const mSeis = makeMaterials();
+      createPartGroup('insight-seis');
+      addMeshToPart('insight-seis', trackGeo(new THREE.CylinderGeometry(0.26, 0.3, 0.18, 20)), mSeis.copperAccent, [0.15, -0.64, 1.38]);
+      addMeshToPart('insight-seis', trackGeo(new THREE.SphereGeometry(0.26, 20, 14, 0, Math.PI * 2, 0, Math.PI * 0.5)), mSeis.whiteDish, [0.15, -0.55, 1.38]);
+      const tether = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0.05, -0.08, 0.65),
+        new THREE.Vector3(0.1, -0.68, 0.95),
+        new THREE.Vector3(0.15, -0.68, 1.18),
+      ]);
+      addMeshToPart('insight-seis', trackGeo(new THREE.TubeGeometry(tether, 16, 0.024, 6, false)), mSeis.warmOrange);
+
+      const mArm = makeMaterials();
+      createPartGroup('insight-arm');
+      const armCurve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-0.22, 0.16, 0.42),
+        new THREE.Vector3(-0.32, 0.68, 0.62),
+        new THREE.Vector3(-0.18, 0.84, 0.96),
+      ]);
+      addMeshToPart('insight-arm', trackGeo(new THREE.TubeGeometry(armCurve, 14, 0.04, 8, false)), mArm.polishedAlum);
+      addMeshToPart('insight-arm', trackGeo(new THREE.BoxGeometry(0.14, 0.14, 0.18)), mArm.darkCarbon, [-0.18, 0.84, 1.04]);
+      break;
+    }
+
+    // -----------------------------------------------------------------------
+    // 7R-C. PHILAE (COMET 67P LANDER)
+    // -----------------------------------------------------------------------
+    case 'philae': {
+      const mBody = makeMaterials();
+      createPartGroup('philae-body');
+      addMeshToPart('philae-body', trackGeo(createBeveledPolygonGeometry(6, 0.72, 0.68, 0.04)), mBody.solar, [0, 0.18, 0], [Math.PI / 2, 0, 0]);
+      addMeshToPart('philae-body', trackGeo(new THREE.CylinderGeometry(0.55, 0.62, 0.16, 6)), mBody.darkCarbon, [0, 0.58, 0]);
+      addMeshToPart('philae-body', trackGeo(new THREE.BoxGeometry(0.68, 0.56, 0.06)), mBody.solar, [0, 0.18, 0.64]);
+
+      const mLegs = makeMaterials();
+      createPartGroup('philae-legs');
+      addMeshToPart('philae-legs', trackGeo(new THREE.CylinderGeometry(0.18, 0.22, 0.34, 12)), mLegs.brushedTitanium, [0, -0.32, 0]);
+      for (let i = 0; i < 3; i++) {
+        const a = (i / 3) * Math.PI * 2 + 0.3;
+        addMeshToPart('philae-legs', trackGeo(new THREE.CylinderGeometry(0.03, 0.035, 1.15, 8)), mLegs.polishedAlum, [Math.cos(a) * 0.72, -0.58, Math.sin(a) * 0.72], [Math.sin(a) * 0.85, 0, -Math.cos(a) * 0.85]);
+        addMeshToPart('philae-legs', trackGeo(new THREE.BoxGeometry(0.24, 0.06, 0.14)), mLegs.darkCarbon, [Math.cos(a) * 1.18, -0.82, Math.sin(a) * 1.18], [0, -a, 0]);
+        addMeshToPart('philae-legs', trackGeo(new THREE.ConeGeometry(0.04, 0.18, 8)), mLegs.copperAccent, [Math.cos(a) * 1.24, -0.9, Math.sin(a) * 1.24], [Math.PI, 0, 0]);
+      }
+
+      const mInst = makeMaterials();
+      createPartGroup('philae-instruments');
+      addMeshToPart('philae-instruments', trackGeo(new THREE.CylinderGeometry(0.02, 0.02, 1.05, 8)), mInst.brushedTitanium, [-0.55, 0.68, -0.45], [-0.45, 0, 0.45]);
+      addMeshToPart('philae-instruments', trackGeo(new THREE.SphereGeometry(0.09, 12, 10)), mInst.copperAccent, [-0.76, 1.05, -0.68]);
+      addMeshToPart('philae-instruments', trackGeo(new THREE.CylinderGeometry(0.015, 0.015, 0.92, 8)), mInst.polishedAlum, [0.58, 0.64, 0.42], [0.35, 0, -0.35]);
+      addMeshToPart('philae-instruments', trackGeo(new THREE.CylinderGeometry(0.05, 0.07, 0.24, 12)), mInst.goldFoil, [0.42, 0.68, -0.18]);
+
+      const mBat = makeMaterials();
+      createPartGroup('philae-battery');
+      addMeshToPart('philae-battery', trackGeo(new THREE.BoxGeometry(0.42, 0.36, 0.42)), mBat.goldFoil, [0, 0.18, 0]);
+      addMeshToPart('philae-battery', trackGeo(new THREE.CylinderGeometry(0.11, 0.11, 0.38, 12)), mBat.lensCyan, [0, 0.18, 0.22]);
+      break;
+    }
+
+    // -----------------------------------------------------------------------
+    // 7R-D. PHOENIX (MARS POLAR LANDER)
+    // -----------------------------------------------------------------------
+    case 'phoenix': {
+      const mDeck = makeMaterials();
+      createPartGroup('phoenix-deck');
+      addMeshToPart('phoenix-deck', trackGeo(createBeveledPolygonGeometry(8, 0.76, 0.28, 0.04)), mDeck.goldFoil, [0, 0, 0], [Math.PI / 2, 0, 0]);
+      addMeshToPart('phoenix-deck', trackGeo(new THREE.BoxGeometry(0.34, 0.22, 0.28)), mDeck.polishedAlum, [-0.24, 0.25, -0.15]);
+      for (let i = 0; i < 3; i++) {
+        const a = (i / 3) * Math.PI * 2 + Math.PI / 6;
+        addMeshToPart('phoenix-deck', trackGeo(new THREE.CylinderGeometry(0.035, 0.035, 0.72, 10)), mDeck.brushedTitanium, [Math.cos(a) * 0.7, -0.4, Math.sin(a) * 0.7], [Math.sin(a) * 0.42, 0, -Math.cos(a) * 0.42]);
+        addMeshToPart('phoenix-deck', trackGeo(new THREE.CylinderGeometry(0.14, 0.16, 0.06, 14)), mDeck.darkCarbon, [Math.cos(a) * 0.9, -0.7, Math.sin(a) * 0.9]);
+      }
+
+      const mSolar = makeMaterials();
+      createPartGroup('phoenix-solar');
+      [-1, 1].forEach((side) => {
+        addMeshToPart('phoenix-solar', trackGeo(new THREE.CylinderGeometry(0.03, 0.03, 0.55, 8)), mSolar.brushedTitanium, [side * 0.9, 0.04, 0], [0, 0, Math.PI / 2]);
+        addMeshToPart('phoenix-solar', trackGeo(new THREE.CylinderGeometry(0.95, 0.95, 0.04, 8)), mSolar.solar, [side * 1.58, 0.04, 0], [0.06, 0, side * -0.05]);
+      });
+
+      const mArm = makeMaterials();
+      createPartGroup('phoenix-arm');
+      const scoopBoom = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0.28, 0.16, 0.32),
+        new THREE.Vector3(0.68, 0.72, 0.72),
+        new THREE.Vector3(0.92, -0.28, 1.08),
+      ]);
+      addMeshToPart('phoenix-arm', trackGeo(new THREE.TubeGeometry(scoopBoom, 16, 0.045, 8, false)), mArm.polishedAlum);
+      addMeshToPart('phoenix-arm', trackGeo(new THREE.BoxGeometry(0.18, 0.14, 0.24)), mArm.brushedTitanium, [0.94, -0.34, 1.15], [0.4, 0, 0]);
+      addMeshToPart('phoenix-arm', trackGeo(new THREE.BoxGeometry(0.26, 0.2, 0.22)), mArm.goldFoil, [0.24, 0.24, -0.18]);
+
+      const mMet = makeMaterials();
+      createPartGroup('phoenix-met');
+      addMeshToPart('phoenix-met', trackGeo(new THREE.CylinderGeometry(0.025, 0.03, 1.18, 10)), mMet.polishedAlum, [-0.15, 0.72, -0.35]);
+      const vane = addMeshToPart('phoenix-met', trackGeo(new THREE.BoxGeometry(0.32, 0.04, 0.06)), mMet.copperAccent, [-0.15, 1.28, -0.35]);
+      spinParts.push({ obj: vane, axis: 'y', speed: 1.8 });
+      addMeshToPart('phoenix-met', trackGeo(new THREE.CylinderGeometry(0.06, 0.08, 0.18, 12)), mMet.lensCyan, [0.06, 0.34, 0.18]);
+      break;
+    }
   }
 
   return {

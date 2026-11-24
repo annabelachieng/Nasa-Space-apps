@@ -8,6 +8,9 @@ export interface ProceduralTextureSet {
   metalBrushedBump: THREE.CanvasTexture;
   heatShield: THREE.CanvasTexture;
   marsSurface: THREE.CanvasTexture;
+  marsPolarSurface: THREE.CanvasTexture;
+  venusSurface: THREE.CanvasTexture;
+  cometSurface: THREE.CanvasTexture;
   earthSurface: THREE.CanvasTexture;
   jupiterSurface: THREE.CanvasTexture;
   saturnSurface: THREE.CanvasTexture;
@@ -328,6 +331,54 @@ export function createProceduralTextures(maxAniso = 4): ProceduralTextureSet {
   contactShadow.needsUpdate = true;
   allTextures.push(contactShadow);
 
+  // 13. Mars Polar Permafrost & Water Ice Surface
+  const [polarC, polarCtx] = createCanvas(512, 512);
+  polarCtx.fillStyle = '#8b5744';
+  polarCtx.fillRect(0, 0, 512, 512);
+  for (let i = 0; i < 420; i++) {
+    const x = (Math.sin(i * 6.31) * 0.5 + 0.5) * 512;
+    const y = (Math.cos(i * 9.17) * 0.5 + 0.5) * 512;
+    const r = 4 + (i % 20);
+    polarCtx.fillStyle = i % 3 === 0 ? 'rgba(218,228,242,0.42)' : i % 2 === 0 ? 'rgba(122,74,56,0.35)' : 'rgba(66,46,42,0.28)';
+    polarCtx.beginPath();
+    polarCtx.arc(x, y, r, 0, Math.PI * 2);
+    polarCtx.fill();
+  }
+  const marsPolarSurface = finalizeTexture(polarC, true, maxAniso, 4, 4);
+  allTextures.push(marsPolarSurface);
+
+  // 14. Venus Scorched Basalt & Ochre Dust Surface
+  const [venC, venCtx] = createCanvas(512, 512);
+  venCtx.fillStyle = '#5c3112';
+  venCtx.fillRect(0, 0, 512, 512);
+  for (let i = 0; i < 520; i++) {
+    const x = (Math.sin(i * 5.71) * 0.5 + 0.5) * 512;
+    const y = (Math.cos(i * 11.43) * 0.5 + 0.5) * 512;
+    const r = 5 + (i % 24);
+    venCtx.fillStyle = i % 3 === 0 ? 'rgba(180,104,28,0.32)' : i % 2 === 0 ? 'rgba(54,28,12,0.42)' : 'rgba(218,142,46,0.2)';
+    venCtx.beginPath();
+    venCtx.arc(x, y, r, 0, Math.PI * 2);
+    venCtx.fill();
+  }
+  const venusSurface = finalizeTexture(venC, true, maxAniso, 4, 4);
+  allTextures.push(venusSurface);
+
+  // 15. Comet 67P Charcoal Dust & Icy Patch Surface
+  const [comC, comCtx] = createCanvas(512, 512);
+  comCtx.fillStyle = '#1e222b';
+  comCtx.fillRect(0, 0, 512, 512);
+  for (let i = 0; i < 480; i++) {
+    const x = (Math.sin(i * 8.19) * 0.5 + 0.5) * 512;
+    const y = (Math.cos(i * 13.37) * 0.5 + 0.5) * 512;
+    const r = 3 + (i % 16);
+    comCtx.fillStyle = i % 9 === 0 ? 'rgba(148,163,184,0.22)' : i % 2 === 0 ? 'rgba(48,54,68,0.45)' : 'rgba(15,18,24,0.45)';
+    comCtx.beginPath();
+    comCtx.arc(x, y, r, 0, Math.PI * 2);
+    comCtx.fill();
+  }
+  const cometSurface = finalizeTexture(comC, true, maxAniso, 4, 4);
+  allTextures.push(cometSurface);
+
   return {
     goldFoilColor,
     goldFoilBump,
@@ -336,6 +387,9 @@ export function createProceduralTextures(maxAniso = 4): ProceduralTextureSet {
     metalBrushedBump,
     heatShield,
     marsSurface,
+    marsPolarSurface,
+    venusSurface,
+    cometSurface,
     earthSurface,
     jupiterSurface,
     saturnSurface,

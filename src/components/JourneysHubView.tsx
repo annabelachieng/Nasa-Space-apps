@@ -6,9 +6,11 @@ import {
   BookOpen,
   CheckCircle2,
   Clock,
+  Compass,
   Hammer,
   Layers,
   Orbit,
+  ScrollText,
   Trophy,
 } from 'lucide-react';
 import { SPACECRAFT_CATEGORIES, SPACECRAFT_LIST } from '../data/spacecraftData';
@@ -18,11 +20,14 @@ import {
   CategoryId,
   ExploreMode,
   JourneyStep,
+  MissionLogEntry,
   SpacecraftData,
 } from '../types/spacecraft';
 import { getCraftCompletionStats, getCraftProgress } from '../utils/badgeProgress';
 import { SpacecraftImage } from './SpacecraftImage';
 import { ExplorerHallOfFame } from './ExplorerHallOfFame';
+import { MissionLog } from './MissionLog';
+import { CategoryProgressMap } from './CategoryProgressMap';
 import { sfx } from '../utils/soundEffects';
 
 interface JourneysHubViewProps {
@@ -35,11 +40,14 @@ interface JourneysHubViewProps {
   onOpenCraftSection: (
     craft: SpacecraftData,
     section: AppSection,
-    exploreMode?: ExploreMode
+    exploreMode?: ExploreMode,
+    partId?: string
   ) => void;
   onNavigateSection: (section: AppSection) => void;
   onOpenRoster: () => void;
   badgeProgress: BadgeProgressMap;
+  missionLog: MissionLogEntry[];
+  onClearMissionLog: () => void;
 }
 
 export const JourneysHubView: React.FC<JourneysHubViewProps> = ({
@@ -53,6 +61,8 @@ export const JourneysHubView: React.FC<JourneysHubViewProps> = ({
   onNavigateSection,
   onOpenRoster,
   badgeProgress,
+  missionLog,
+  onClearMissionLog,
 }) => {
   const activeCategory =
     SPACECRAFT_CATEGORIES.find((c) => c.id === selectedCategoryId) ??
@@ -69,14 +79,14 @@ export const JourneysHubView: React.FC<JourneysHubViewProps> = ({
   ).length;
 
   // =========================================================================
-  // STEP 1: CHOOSE ONE OF THE 6 SPACE JOURNEYS (Trailblazers -> Safe at Home)
+  // STEP 1: CHOOSE ONE OF THE 7 SPACE JOURNEYS (Trailblazers -> Safe at Home)
   // =========================================================================
   if (journeyStep === 'categories') {
     return (
       <div className="fixed inset-x-0 top-14 bottom-0 z-20 overflow-y-auto cosmic-scroll bg-transparent px-4 sm:px-8 py-6">
         <div className="max-w-6xl mx-auto space-y-6 pb-10">
           {/* Header Row */}
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-slate-800/80 pb-5">
+          <div className="flex flex-col gap-4 border-b border-slate-800/80 pb-5">
             <div>
               <button
                 type="button"
@@ -99,6 +109,28 @@ export const JourneysHubView: React.FC<JourneysHubViewProps> = ({
                 type="button"
                 onClick={() => {
                   sfx.playPartSelect();
+                  onChangeStep('route-map');
+                }}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-emerald-500/15 border border-emerald-400/50 text-xs sm:text-sm font-semibold text-emerald-300 hover:bg-emerald-500/25 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                <Compass className="w-4 h-4" />
+                <span>Frontier Route Map</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  sfx.playPartSelect();
+                  onChangeStep('mission-log');
+                }}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-sky-500/15 border border-sky-400/50 text-xs sm:text-sm font-semibold text-sky-300 hover:bg-sky-500/25 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                <ScrollText className="w-4 h-4" />
+                <span>Mission Log · {missionLog.length}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  sfx.playPartSelect();
                   onChangeStep('hall-of-fame');
                 }}
                 className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-amber-500/15 border border-amber-400/50 text-xs sm:text-sm font-semibold text-amber-300 hover:bg-amber-500/25 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
@@ -112,7 +144,7 @@ export const JourneysHubView: React.FC<JourneysHubViewProps> = ({
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-700 text-xs sm:text-sm font-semibold text-slate-200 hover:border-sky-400 hover:text-white transition-colors whitespace-nowrap shrink-0 cursor-pointer"
               >
                 <Hammer className="w-4 h-4 text-sky-400" />
-                <span>Build Craft</span>
+                <span>Spacecraft Builder</span>
               </button>
               <button
                 type="button"
@@ -132,7 +164,7 @@ export const JourneysHubView: React.FC<JourneysHubViewProps> = ({
             </div>
           </div>
 
-          {/* 6 Category Picture Cards */}
+          {/* Category Picture Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {SPACECRAFT_CATEGORIES.map((cat, idx) => {
               const crafts = SPACECRAFT_LIST.filter((c) => c.categoryId === cat.id);
@@ -215,7 +247,7 @@ export const JourneysHubView: React.FC<JourneysHubViewProps> = ({
     return (
       <div className="fixed inset-x-0 top-14 bottom-0 z-20 overflow-y-auto cosmic-scroll bg-transparent px-4 sm:px-8 py-6">
         <div className="max-w-6xl mx-auto space-y-6 pb-10">
-          {/* Header with Back to 6 Space Journeys */}
+          {/* Header with Back to All Space Journeys */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-800/80 pb-5">
             <div>
               <button
@@ -224,7 +256,7 @@ export const JourneysHubView: React.FC<JourneysHubViewProps> = ({
                 className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-amber-300 hover:text-amber-200 transition-colors cursor-pointer mb-2"
               >
                 <ArrowLeft className="w-4 h-4" />
-                Back to All 6 Space Journeys
+                Back to All {SPACECRAFT_CATEGORIES.length} Space Journeys
               </button>
               <div
                 className="text-xs font-semibold"
@@ -240,18 +272,34 @@ export const JourneysHubView: React.FC<JourneysHubViewProps> = ({
               </p>
             </div>
 
-            <button
-              type="button"
-              onClick={() => onChangeStep('hall-of-fame')}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-amber-500/15 border border-amber-400/50 text-xs sm:text-sm font-semibold text-amber-300 hover:bg-amber-500/25 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
-            >
-              <Trophy className="w-4 h-4" />
-              <span>Hall of Fame · {earnedTotal}/{SPACECRAFT_LIST.length}</span>
-            </button>
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => onChangeStep('mission-log')}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-sky-500/15 border border-sky-400/50 text-xs sm:text-sm font-semibold text-sky-300 hover:bg-sky-500/25 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                <ScrollText className="w-4 h-4" />
+                <span>Mission Log · {missionLog.length}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onChangeStep('hall-of-fame')}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-amber-500/15 border border-amber-400/50 text-xs sm:text-sm font-semibold text-amber-300 hover:bg-amber-500/25 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                <Trophy className="w-4 h-4" />
+                <span>Hall of Fame · {earnedTotal}/{SPACECRAFT_LIST.length}</span>
+              </button>
+            </div>
           </div>
 
           {/* Clickable Spacecraft Picture Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div
+            className={
+              categoryCrafts.length >= 4
+                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5'
+                : 'grid grid-cols-1 md:grid-cols-3 gap-6'
+            }
+          >
             {categoryCrafts.map((craft) => {
               const stats = getCraftCompletionStats(
                 craft,
@@ -347,22 +395,32 @@ export const JourneysHubView: React.FC<JourneysHubViewProps> = ({
                 onClick={() => onChangeStep('categories')}
                 className="text-xs sm:text-sm font-medium text-slate-400 hover:text-white transition-colors cursor-pointer"
               >
-                All 6 Journeys
+                All {SPACECRAFT_CATEGORIES.length} Journeys
               </button>
             </div>
 
-            <button
-              type="button"
-              onClick={() => onChangeStep('hall-of-fame')}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-amber-500/15 border border-amber-400/50 text-xs sm:text-sm font-semibold text-amber-300 hover:bg-amber-500/25 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
-            >
-              <Trophy className="w-4 h-4" />
-              <span>
-                {craftStats.earned
-                  ? 'Mission Badge Earned!'
-                  : `Badge Progress · ${craftStats.stepsCompleted}/4 Steps`}
-              </span>
-            </button>
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => onChangeStep('mission-log')}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-sky-500/15 border border-sky-400/50 text-xs sm:text-sm font-semibold text-sky-300 hover:bg-sky-500/25 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                <ScrollText className="w-4 h-4" />
+                <span>Mission Log · {missionLog.length}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onChangeStep('hall-of-fame')}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-amber-500/15 border border-amber-400/50 text-xs sm:text-sm font-semibold text-amber-300 hover:bg-amber-500/25 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                <Trophy className="w-4 h-4" />
+                <span>
+                  {craftStats.earned
+                    ? 'Mission Badge Earned!'
+                    : `Badge Progress · ${craftStats.stepsCompleted}/4 Steps`}
+                </span>
+              </button>
+            </div>
           </div>
 
           {/* 2-Column Split: Realistic Mission Photo (Left) + 4 Large Choice Buttons (Right) */}
@@ -520,25 +578,140 @@ export const JourneysHubView: React.FC<JourneysHubViewProps> = ({
   }
 
   // =========================================================================
-  // STEP 4 (DEDICATED SCREEN): EXPLORER HALL OF FAME
+  // STEP 4 (DEDICATED SCREEN): FRONTIER ROUTE MAP
+  // =========================================================================
+  if (journeyStep === 'route-map') {
+    return (
+      <div className="fixed inset-x-0 top-14 bottom-0 z-20 overflow-y-auto cosmic-scroll bg-transparent px-4 sm:px-8 py-6">
+        <div className="max-w-6xl mx-auto space-y-5 pb-12">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={() => onChangeStep('categories')}
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-amber-300 hover:text-amber-200 transition-colors cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to All {SPACECRAFT_CATEGORIES.length} Space Journeys
+            </button>
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => onChangeStep('mission-log')}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-sky-500/15 border border-sky-400/50 text-xs sm:text-sm font-semibold text-sky-300 hover:bg-sky-500/25 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                <ScrollText className="w-4 h-4" />
+                <span>Mission Log · {missionLog.length}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onChangeStep('hall-of-fame')}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-amber-500/15 border border-amber-400/50 text-xs sm:text-sm font-semibold text-amber-300 hover:bg-amber-500/25 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                <Trophy className="w-4 h-4" />
+                <span>Hall of Fame · {earnedTotal}/{SPACECRAFT_LIST.length}</span>
+              </button>
+            </div>
+          </div>
+
+          <CategoryProgressMap
+            badgeProgress={badgeProgress}
+            selectedCategoryId={selectedCategoryId}
+            onSelectCategory={(catId) => {
+              onSelectCategory(catId);
+              onChangeStep('category-crafts');
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // STEP 5 (DEDICATED SCREEN): EXPLORER HALL OF FAME
+  // =========================================================================
+  if (journeyStep === 'hall-of-fame') {
+    return (
+      <div className="fixed inset-x-0 top-14 bottom-0 z-20 overflow-y-auto cosmic-scroll bg-transparent px-4 sm:px-8 py-6">
+        <div className="max-w-6xl mx-auto space-y-5 pb-12">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={() => onChangeStep('categories')}
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-amber-300 hover:text-amber-200 transition-colors cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to All {SPACECRAFT_CATEGORIES.length} Space Journeys
+            </button>
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => onChangeStep('route-map')}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-emerald-500/15 border border-emerald-400/50 text-xs sm:text-sm font-semibold text-emerald-300 hover:bg-emerald-500/25 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                <Compass className="w-4 h-4" />
+                <span>Frontier Route Map</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onChangeStep('mission-log')}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-sky-500/15 border border-sky-400/50 text-xs sm:text-sm font-semibold text-sky-300 hover:bg-sky-500/25 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                <ScrollText className="w-4 h-4" />
+                <span>Mission Log · {missionLog.length}</span>
+              </button>
+            </div>
+          </div>
+
+          <ExplorerHallOfFame
+            badgeProgress={badgeProgress}
+            onOpenCraftSection={onOpenCraftSection}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // STEP 6 (DEDICATED SCREEN): CHRONOLOGICAL MISSION LOG
   // =========================================================================
   return (
     <div className="fixed inset-x-0 top-14 bottom-0 z-20 overflow-y-auto cosmic-scroll bg-transparent px-4 sm:px-8 py-6">
-      <div className="max-w-6xl mx-auto space-y-5 pb-12">
-        <div>
+      <div className="max-w-5xl mx-auto space-y-5 pb-12">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <button
             type="button"
             onClick={() => onChangeStep('categories')}
             className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-amber-300 hover:text-amber-200 transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to All 6 Space Journeys
+            Back to All {SPACECRAFT_CATEGORIES.length} Space Journeys
           </button>
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => onChangeStep('route-map')}
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-emerald-500/15 border border-emerald-400/50 text-xs sm:text-sm font-semibold text-emerald-300 hover:bg-emerald-500/25 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+            >
+              <Compass className="w-4 h-4" />
+              <span>Frontier Route Map</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => onChangeStep('hall-of-fame')}
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-amber-500/15 border border-amber-400/50 text-xs sm:text-sm font-semibold text-amber-300 hover:bg-amber-500/25 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+            >
+              <Trophy className="w-4 h-4" />
+              <span>Hall of Fame · {earnedTotal}/{SPACECRAFT_LIST.length}</span>
+            </button>
+          </div>
         </div>
 
-        <ExplorerHallOfFame
-          badgeProgress={badgeProgress}
+        <MissionLog
+          entries={missionLog}
           onOpenCraftSection={onOpenCraftSection}
+          onNavigateSection={onNavigateSection}
+          onBrowseJourneys={() => onChangeStep('categories')}
+          onClearLog={onClearMissionLog}
         />
       </div>
     </div>

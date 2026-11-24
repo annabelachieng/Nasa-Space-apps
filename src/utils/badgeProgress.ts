@@ -103,25 +103,26 @@ export function getExplorerRank(earnedCount: number, totalCount: number): {
   if (earnedCount >= totalCount && totalCount > 0) {
     return {
       title: 'Supreme Galactic Legend',
-      nextGoal: 'All 18 Cosmic Frontlines Mission Badges collected!',
+      nextGoal: `All ${totalCount} Cosmic Frontlines Mission Badges collected!`,
     };
   }
-  if (earnedCount >= 12) {
+  const commanderAt = Math.max(14, Math.ceil(totalCount * 0.66));
+  if (earnedCount >= commanderAt) {
     return {
       title: 'Cosmic Frontlines Commander',
       nextGoal: `Earn ${totalCount - earnedCount} more badge${totalCount - earnedCount === 1 ? '' : 's'} for Supreme Galactic Legend`,
     };
   }
-  if (earnedCount >= 6) {
+  if (earnedCount >= 7) {
     return {
       title: 'Deep Space Navigator',
-      nextGoal: `Earn ${12 - earnedCount} more badge${12 - earnedCount === 1 ? '' : 's'} for Cosmic Frontlines Commander`,
+      nextGoal: `Earn ${commanderAt - earnedCount} more badge${commanderAt - earnedCount === 1 ? '' : 's'} for Cosmic Frontlines Commander`,
     };
   }
   if (earnedCount >= 3) {
     return {
       title: 'Solar System Scout',
-      nextGoal: `Earn ${6 - earnedCount} more badge${6 - earnedCount === 1 ? '' : 's'} for Deep Space Navigator`,
+      nextGoal: `Earn ${7 - earnedCount} more badge${7 - earnedCount === 1 ? '' : 's'} for Deep Space Navigator`,
     };
   }
   if (earnedCount >= 1) {

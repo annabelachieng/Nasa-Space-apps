@@ -112,6 +112,44 @@ export const MissionPatchSvg: React.FC<MissionPatchSvgProps> = ({
           <line x1="60" y1="57" x2="43" y2="67" stroke={emblemColor} strokeWidth="3.2" />
         </g>
       )}
+      {categoryId === 'missing-in-action' && (
+        <g>
+          <path
+            d="M36 68 Q60 40 84 68"
+            fill="none"
+            stroke={emblemColor}
+            strokeWidth="1.8"
+            strokeDasharray="3 3"
+          />
+          <polygon points="52,61 55,51 65,51 68,61" fill={emblemColor} />
+          <circle cx="46" cy="57" r="3" fill={emblemColor} />
+          <circle cx="74" cy="57" r="3" fill={emblemColor} />
+          <path
+            d="M54 45 Q60 41 66 45"
+            fill="none"
+            stroke={earned ? '#ddd6fe' : '#475569'}
+            strokeWidth="1.6"
+          />
+        </g>
+      )}
+      {categoryId === 'rearguard' && (
+        <g>
+          <path
+            d="M60 40 L74 46 V59 C74 68 67 74 60 77 C53 74 46 68 46 59 V46 Z"
+            fill="none"
+            stroke={emblemColor}
+            strokeWidth="2.2"
+          />
+          <circle cx="60" cy="57" r="4.5" fill={emblemColor} />
+          <path
+            d="M52 49 Q60 43 68 49"
+            fill="none"
+            stroke={earned ? '#fecdd3' : '#475569'}
+            strokeWidth="1.6"
+          />
+          <line x1="48" y1="68" x2="72" y2="68" stroke={emblemColor} strokeWidth="1.8" />
+        </g>
+      )}
       {categoryId === 'safe-at-home' && (
         <g>
           <path d="M46 66 L54 45 L66 45 L74 66 Z" fill={emblemColor} />
